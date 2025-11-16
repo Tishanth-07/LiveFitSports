@@ -11,6 +11,8 @@ using LiveFitSports.API.Utilities;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+// Listen on all network interfaces for dev access from devices
+builder.WebHost.UseUrls("http://0.0.0.0:5126");
 var configuration = builder.Configuration;
 
 // Add services
