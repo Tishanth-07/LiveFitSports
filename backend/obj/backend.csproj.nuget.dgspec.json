@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\IT - UOM\\L3S1\\Mobile Application\\LiveFit Sports\\backend\\backend.csproj": {}
+    "C:\\IT - UOM\\L3S1\\Mobile Application\\LiveFitSports\\backend\\backend.csproj": {}
   },
   "projects": {
-    "C:\\IT - UOM\\L3S1\\Mobile Application\\LiveFit Sports\\backend\\backend.csproj": {
+    "C:\\IT - UOM\\L3S1\\Mobile Application\\LiveFitSports\\backend\\backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\IT - UOM\\L3S1\\Mobile Application\\LiveFit Sports\\backend\\backend.csproj",
+        "projectUniqueName": "C:\\IT - UOM\\L3S1\\Mobile Application\\LiveFitSports\\backend\\backend.csproj",
         "projectName": "backend",
-        "projectPath": "C:\\IT - UOM\\L3S1\\Mobile Application\\LiveFit Sports\\backend\\backend.csproj",
+        "projectPath": "C:\\IT - UOM\\L3S1\\Mobile Application\\LiveFitSports\\backend\\backend.csproj",
         "packagesPath": "C:\\Users\\Tishanth\\.nuget\\packages\\",
-        "outputPath": "C:\\IT - UOM\\L3S1\\Mobile Application\\LiveFit Sports\\backend\\obj\\",
+        "outputPath": "C:\\IT - UOM\\L3S1\\Mobile Application\\LiveFitSports\\backend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Tishanth\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -44,9 +44,41 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "dependencies": {
+            "BCrypt.Net-Next": {
+              "target": "Package",
+              "version": "[4.0.3, )"
+            },
+            "FluentValidation": {
+              "target": "Package",
+              "version": "[12.1.0, )"
+            },
+            "Google.Apis.Auth": {
+              "target": "Package",
+              "version": "[1.72.0, )"
+            },
+            "MailKit": {
+              "target": "Package",
+              "version": "[4.14.1, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[9.0.8, )"
+            },
+            "MongoDB.Driver": {
+              "target": "Package",
+              "version": "[3.5.0, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.6.2, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[8.14.0, )"
             }
           },
           "imports": [
