@@ -12,6 +12,7 @@ type Props = {
   onComplete: (code: string) => void;
   countdown?: number; // seconds
   onResend?: () => void;
+  onChangeCode?: (code: string) => void;
 };
 
 export default function OTPInput({
@@ -19,6 +20,7 @@ export default function OTPInput({
   onComplete,
   countdown = 120,
   onResend,
+  onChangeCode,
 }: Props) {
   const [values, setValues] = useState<string[]>(Array(length).fill(""));
   const refs = useRef<Array<TextInput | null>>([]);
@@ -54,7 +56,8 @@ export default function OTPInput({
       refs.current[i + 1]?.focus();
     }
     const code = newVals.join("");
-    if (code.length === length && !code.includes("")) {
+    onChangeCode?.(code);
+    if (code.length === length && !newVals.includes("")) {
       onComplete(code);
     }
   };

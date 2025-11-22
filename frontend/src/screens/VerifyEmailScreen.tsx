@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Alert } from "react-native";
+import { View, Text, StyleSheet, Alert, TouchableOpacity } from "react-native";
 import OTPInput from "../components/OTPInput";
 import api from "../services/api";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -10,6 +10,7 @@ type Props = NativeStackScreenProps<AuthStackParamList, "VerifyEmail">;
 export default function VerifyEmailScreen({ route, navigation }: Props) {
   const email = route.params?.email || "";
   const [loading, setLoading] = useState(false);
+  const [code, setCode] = useState("");
 
   const handleComplete = async (code: string) => {
     setLoading(true);
@@ -46,7 +47,25 @@ export default function VerifyEmailScreen({ route, navigation }: Props) {
         onComplete={handleComplete}
         countdown={120}
         onResend={handleResend}
+        onChangeCode={setCode}
       />
+
+      <TouchableOpacity
+        onPress={() => handleComplete(code)}
+        disabled={loading || code.trim().length !== 6}
+        style={{
+          marginTop: 12,
+          backgroundColor:
+            loading || code.trim().length !== 6 ? "#999" : "#0b76ef",
+          padding: 14,
+          borderRadius: 8,
+          alignItems: "center",
+        }}
+      >
+        <Text style={{ color: "#fff", fontWeight: "600" }}>
+          {loading ? "Verifying..." : "Submit"}
+        </Text>
+      </TouchableOpacity>
 
       <Text style={{ marginTop: 20, color: "#666" }}>
         {loading ? "Verifying..." : ""}
