@@ -11,16 +11,16 @@ import api from "../services/api";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AuthStackParamList } from "../navigation/AuthStack";
 import { isValidPassword } from "../utils/validation";
-import OTPInput from "../components/OTPInput";
 
 type Props = NativeStackScreenProps<AuthStackParamList, "ResetPassword">;
 
 export default function ResetPasswordScreen({ route, navigation }: Props) {
   const email = route.params?.email ?? "";
+  const code = route.params?.code ?? "";
   const [newPassword, setNewPassword] = useState("");
   const [confirm, setConfirm] = useState("");
 
-  const handleComplete = async (code: string) => {
+  const handleSubmit = async () => {
     if (!isValidPassword(newPassword)) {
       Alert.alert(
         "Invalid password",
@@ -36,15 +36,6 @@ export default function ResetPasswordScreen({ route, navigation }: Props) {
       await api.post("/api/auth/reset-password", { email, code, newPassword });
       Alert.alert("Success", "Password reset successful. Please login.");
       navigation.navigate("Login");
-    } catch (err: any) {
-      Alert.alert("Error", err?.response?.data?.error ?? err.message);
-    }
-  };
-
-  const handleResend = async () => {
-    try {
-      await api.post("/api/auth/forgot-password", { email });
-      Alert.alert("Sent", "Reset code resent.");
     } catch (err: any) {
       Alert.alert("Error", err?.response?.data?.error ?? err.message);
     }
@@ -75,13 +66,18 @@ export default function ResetPasswordScreen({ route, navigation }: Props) {
         symbol
       </Text>
 
-      <Text style={{ marginTop: 12 }}>Enter the 6-digit code below</Text>
-
-      <OTPInput
-        onComplete={handleComplete}
-        countdown={120}
-        onResend={handleResend}
-      />
+      <TouchableOpacity
+        style={{
+          backgroundColor: "#0b76ef",
+          padding: 14,
+          borderRadius: 8,
+          marginTop: 16,
+          alignItems: "center",
+        }}
+        onPress={handleSubmit}
+      >
+        <Text style={{ color: "#fff", fontWeight: "600" }}>Submit</Text>
+      </TouchableOpacity>
     </View>
   );
 }

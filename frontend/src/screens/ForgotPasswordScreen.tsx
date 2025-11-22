@@ -20,7 +20,7 @@ export default function ForgotPasswordScreen({ navigation }: Props) {
     try {
       await api.post("/api/auth/forgot-password", { email });
       Alert.alert("Sent", "Password reset code sent. Check your email.");
-      navigation.navigate("ResetPassword", { email });
+      navigation.navigate("VerifyResetCode", { email });
     } catch (err: any) {
       Alert.alert("Error", err?.response?.data?.error ?? err.message);
     }
