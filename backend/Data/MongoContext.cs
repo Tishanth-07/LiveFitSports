@@ -1,3 +1,4 @@
+using LiveFitSports.API.Models;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 
@@ -14,6 +15,9 @@ namespace LiveFitSports.API.Data
     {
         private readonly IMongoDatabase _database;
         public IMongoCollection<Models.User> Users { get; }
+        public IMongoCollection<Workout> Workouts { get; }
+        public IMongoCollection<HealthTip> HealthTips { get; }
+
 
         public IMongoDatabase Database => _database;
 
@@ -24,6 +28,8 @@ namespace LiveFitSports.API.Data
             var client = new MongoClient(settings.ConnectionString);
             _database = client.GetDatabase(settings.DatabaseName);
             Users = _database.GetCollection<Models.User>(settings.UsersCollection ?? "users");
+            Workouts = _database.GetCollection<Workout>("workouts");
+            HealthTips = _database.GetCollection<HealthTip>("healthtips");
         }
     }
 }

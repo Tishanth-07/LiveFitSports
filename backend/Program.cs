@@ -17,12 +17,15 @@ builder.WebHost.UseUrls("http://0.0.0.0:5126");
 var configuration = builder.Configuration;
 
 // Add services
+builder.Services.Configure<MongoSettings>(builder.Configuration.GetSection("MongoSettings"));
 builder.Services.AddSingleton<MongoContext>();
 builder.Services.AddSingleton<UserRepository>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddSingleton<MatchRepository>();
 builder.Services.AddSingleton<FavoriteRepository>();
+builder.Services.AddSingleton<IHealthRepository, HealthRepository>();
+builder.Services.AddSingleton<HealthService>();
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -115,6 +118,13 @@ using (var scope = app.Services.CreateScope())
     var context = services.GetRequiredService<MongoContext>();
     var seeder = new MatchSeeder(context);
     await seeder.SeedAsync();
+}
+
+// Seed data
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<MongoContext>();
+    await SeedData.SeedAsync(context);
 }
 
 app.UseCors("AllowAll");
