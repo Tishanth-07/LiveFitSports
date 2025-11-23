@@ -15,6 +15,8 @@ namespace LiveFitSports.API.Data
         private readonly IMongoDatabase _database;
         public IMongoCollection<Models.User> Users { get; }
 
+        public IMongoDatabase Database => _database;
+
         public MongoContext(IConfiguration config)
         {
             var settings = config.GetSection("MongoSettings").Get<MongoSettings>()

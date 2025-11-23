@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using LiveFitSports.API.Utilities;
 using System.Text;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 // Listen on all network interfaces for dev access from devices
@@ -20,6 +21,38 @@ builder.Services.AddSingleton<MongoContext>();
 builder.Services.AddSingleton<UserRepository>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddSingleton<MatchRepository>();
+builder.Services.AddSingleton<FavoriteRepository>();
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "LiveFitSports API", Version = "v1" });
+
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter your JWT token like: **Bearer your_token_here**"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
 
 // Jwt settings
 var jwtSettings = configuration.GetSection("JwtSettings").Get<JwtSettings>();
@@ -28,6 +61,15 @@ if (jwtSettings == null)
     // create a default to avoid null refs; ensure to set in appsettings.json
     jwtSettings = new JwtSettings { Secret = "REPLACE_ME_WITH_SECRET", Issuer = "LiveFitSportsAPI", Audience = "LiveFitSportsClient", ExpiresMinutes = 60 };
 }
+
+
+
+// CORS (allow the local mobile IP)
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", p => p.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+});
+
 
 // configure auth
 builder.Services.AddAuthentication(options =>
@@ -66,6 +108,16 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// Seed matches
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<MongoContext>();
+    var seeder = new MatchSeeder(context);
+    await seeder.SeedAsync();
+}
+
+app.UseCors("AllowAll");
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
