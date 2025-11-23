@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  Animated,
 } from "react-native";
 
 type Props = {
@@ -26,6 +27,8 @@ export default function OTPInput({
   const refs = useRef<Array<TextInput | null>>([]);
   const [secondsLeft, setSecondsLeft] = useState(countdown);
   const [running, setRunning] = useState(true);
+  const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
+  const shakeAnimation = useRef(new Animated.Value(0)).current;
 
   React.useEffect(() => {
     setSecondsLeft(countdown);
@@ -48,7 +51,32 @@ export default function OTPInput({
   }, [running]);
 
   const handleChange = (text: string, i: number) => {
-    if (!/^\d*$/.test(text)) return;
+    if (!/^\d*$/.test(text)) {
+      // Shake animation for invalid input
+      Animated.sequence([
+        Animated.timing(shakeAnimation, {
+          toValue: 10,
+          duration: 50,
+          useNativeDriver: true,
+        }),
+        Animated.timing(shakeAnimation, {
+          toValue: -10,
+          duration: 50,
+          useNativeDriver: true,
+        }),
+        Animated.timing(shakeAnimation, {
+          toValue: 10,
+          duration: 50,
+          useNativeDriver: true,
+        }),
+        Animated.timing(shakeAnimation, {
+          toValue: 0,
+          duration: 50,
+          useNativeDriver: true,
+        }),
+      ]).start();
+      return;
+    }
     const newVals = [...values];
     newVals[i] = text.slice(-1);
     setValues(newVals);
@@ -62,39 +90,76 @@ export default function OTPInput({
     }
   };
 
+  const handleKeyPress = (e: any, index: number) => {
+    if (e.nativeEvent.key === "Backspace" && !values[index] && index > 0) {
+      refs.current[index - 1]?.focus();
+    }
+  };
+
   const clearAll = () => {
     const empty = Array(length).fill("");
     setValues(empty);
     refs.current[0]?.focus();
   };
 
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
+
   return (
-    <View style={{ alignItems: "center" }}>
-      <View style={styles.row}>
+    <View style={styles.container}>
+      <Animated.View
+        style={[styles.row, { transform: [{ translateX: shakeAnimation }] }]}
+      >
         {Array.from({ length }).map((_, i) => (
-          <TextInput
-            key={i}
-            ref={(r) => {
-              refs.current[i] = r;
-            }}
-            value={values[i]}
-            onChangeText={(t) => handleChange(t, i)}
-            keyboardType="number-pad"
-            maxLength={1}
-            style={styles.input}
-            returnKeyType="next"
-          />
+          <View key={i} style={styles.inputContainer}>
+            <TextInput
+              ref={(r) => {
+                refs.current[i] = r;
+              }}
+              value={values[i]}
+              onChangeText={(t) => handleChange(t, i)}
+              onKeyPress={(e) => handleKeyPress(e, i)}
+              onFocus={() => setFocusedIndex(i)}
+              onBlur={() => setFocusedIndex(null)}
+              keyboardType="number-pad"
+              maxLength={1}
+              style={[
+                styles.input,
+                focusedIndex === i && styles.inputFocused,
+                values[i] && styles.inputFilled,
+              ]}
+              returnKeyType="next"
+              selectTextOnFocus
+            />
+            {focusedIndex === i && <View style={styles.focusIndicator} />}
+          </View>
         ))}
+      </Animated.View>
+
+      {/* Timer Section */}
+      <View style={styles.timerContainer}>
+        {running ? (
+          <View style={styles.timerBox}>
+            <Text style={styles.timerIcon}>⏱️</Text>
+            <Text style={styles.timerText}>
+              Code expires in{" "}
+              <Text style={styles.timerHighlight}>
+                {formatTime(secondsLeft)}
+              </Text>
+            </Text>
+          </View>
+        ) : (
+          <View style={styles.expiredBox}>
+            <Text style={styles.expiredIcon}>⚠️</Text>
+            <Text style={styles.expiredText}>Code expired</Text>
+          </View>
+        )}
       </View>
 
-      <Text style={{ marginTop: 10 }}>
-        {running
-          ? `Expires in ${Math.floor(secondsLeft / 60)}:${(secondsLeft % 60)
-              .toString()
-              .padStart(2, "0")}`
-          : "Code expired"}
-      </Text>
-
+      {/* Resend Button */}
       <TouchableOpacity
         onPress={() => {
           if (onResend) {
@@ -104,26 +169,157 @@ export default function OTPInput({
             clearAll();
           }
         }}
-        style={{ marginTop: 10 }}
+        disabled={!onResend || running}
+        style={[
+          styles.resendButton,
+          (!onResend || running) && styles.resendButtonDisabled,
+        ]}
+        activeOpacity={0.7}
       >
-        <Text style={{ color: onResend ? "#007bff" : "#999" }}>
-          Resend Code
+        <Text
+          style={[
+            styles.resendText,
+            (!onResend || running) && styles.resendTextDisabled,
+          ]}
+        >
+          {running ? "Resend available soon" : "Resend Code"}
         </Text>
       </TouchableOpacity>
+
+      {/* Clear Button */}
+      {values.some((v) => v !== "") && (
+        <TouchableOpacity onPress={clearAll} style={styles.clearButton}>
+          <Text style={styles.clearText}>Clear All</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  row: { flexDirection: "row", justifyContent: "center", gap: 8 },
+  container: {
+    alignItems: "center",
+    paddingVertical: 16,
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 10,
+    marginBottom: 24,
+  },
+  inputContainer: {
+    position: "relative",
+  },
   input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    width: 45,
-    height: 55,
+    borderWidth: 2,
+    borderColor: "#E0E0E0",
+    width: 50,
+    height: 60,
     textAlign: "center",
-    fontSize: 20,
-    borderRadius: 6,
-    marginHorizontal: 4,
+    fontSize: 24,
+    fontWeight: "700",
+    borderRadius: 12,
+    backgroundColor: "#F5F5F5",
+    color: "#1A1A1A",
+  },
+  inputFocused: {
+    borderColor: "#FF6B35",
+    backgroundColor: "#FFF5F2",
+    shadowColor: "#FF6B35",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  inputFilled: {
+    borderColor: "#FF6B35",
+    backgroundColor: "#FFF5F2",
+  },
+  focusIndicator: {
+    position: "absolute",
+    bottom: -4,
+    left: "50%",
+    marginLeft: -4,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#FF6B35",
+  },
+  timerContainer: {
+    marginBottom: 16,
+  },
+  timerBox: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#E8F5E9",
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#4CAF50",
+  },
+  timerIcon: {
+    fontSize: 16,
+    marginRight: 8,
+  },
+  timerText: {
+    fontSize: 14,
+    color: "#2E7D32",
+    fontWeight: "500",
+  },
+  timerHighlight: {
+    fontWeight: "700",
+    color: "#1B5E20",
+  },
+  expiredBox: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FFEBEE",
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#EF5350",
+  },
+  expiredIcon: {
+    fontSize: 16,
+    marginRight: 8,
+  },
+  expiredText: {
+    fontSize: 14,
+    color: "#C62828",
+    fontWeight: "600",
+  },
+  resendButton: {
+    backgroundColor: "#FF6B35",
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 10,
+    shadowColor: "#FF6B35",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  resendButtonDisabled: {
+    backgroundColor: "#E0E0E0",
+    shadowOpacity: 0,
+  },
+  resendText: {
+    color: "#FFFFFF",
+    fontSize: 15,
+    fontWeight: "600",
+  },
+  resendTextDisabled: {
+    color: "#999999",
+  },
+  clearButton: {
+    marginTop: 12,
+    paddingVertical: 8,
+  },
+  clearText: {
+    color: "#666666",
+    fontSize: 14,
+    textDecorationLine: "underline",
   },
 });

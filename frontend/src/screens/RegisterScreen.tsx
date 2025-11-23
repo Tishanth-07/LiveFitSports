@@ -6,6 +6,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -45,116 +48,321 @@ export default function RegisterScreen({ navigation }: Props) {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Create Account</Text>
-
-      <Formik
-        initialValues={{ firstName: "", lastName: "", email: "", password: "" }}
-        validationSchema={SignupSchema}
-        onSubmit={handleSubmit}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
-        {({
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          values,
-          errors,
-          touched,
-        }) => (
-          <>
-            <TextInput
-              placeholder="First name"
-              style={styles.input}
-              onChangeText={handleChange("firstName")}
-              onBlur={handleBlur("firstName")}
-              value={values.firstName}
-            />
-            {errors.firstName && touched.firstName && (
-              <Text style={styles.err}>{errors.firstName}</Text>
-            )}
+        <View style={styles.header}>
+          <Text style={styles.title}>Create Account</Text>
+          <Text style={styles.subtitle}>
+            Sign up to get started with your account
+          </Text>
+        </View>
 
-            <TextInput
-              placeholder="Last name"
-              style={styles.input}
-              onChangeText={handleChange("lastName")}
-              onBlur={handleBlur("lastName")}
-              value={values.lastName}
-            />
-            {errors.lastName && touched.lastName && (
-              <Text style={styles.err}>{errors.lastName}</Text>
-            )}
+        <Formik
+          initialValues={{
+            firstName: "",
+            lastName: "",
+            email: "",
+            password: "",
+          }}
+          validationSchema={SignupSchema}
+          onSubmit={handleSubmit}
+        >
+          {({
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            values,
+            errors,
+            touched,
+          }) => (
+            <View style={styles.formContainer}>
+              {/* First Name Input */}
+              <View style={styles.inputWrapper}>
+                <View style={styles.iconContainer}>
+                  <Text style={styles.icon}>👤</Text>
+                </View>
+                <TextInput
+                  placeholder="First name"
+                  placeholderTextColor="#A0A0A0"
+                  style={[
+                    styles.input,
+                    errors.firstName && touched.firstName && styles.inputError,
+                  ]}
+                  onChangeText={handleChange("firstName")}
+                  onBlur={handleBlur("firstName")}
+                  value={values.firstName}
+                />
+              </View>
+              {errors.firstName && touched.firstName && (
+                <Text style={styles.err}>{errors.firstName}</Text>
+              )}
 
-            <TextInput
-              placeholder="Email"
-              style={styles.input}
-              onChangeText={handleChange("email")}
-              onBlur={handleBlur("email")}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              value={values.email}
-            />
-            {errors.email && touched.email && (
-              <Text style={styles.err}>{errors.email}</Text>
-            )}
+              {/* Last Name Input */}
+              <View style={styles.inputWrapper}>
+                <View style={styles.iconContainer}>
+                  <Text style={styles.icon}>👤</Text>
+                </View>
+                <TextInput
+                  placeholder="Last name"
+                  placeholderTextColor="#A0A0A0"
+                  style={[
+                    styles.input,
+                    errors.lastName && touched.lastName && styles.inputError,
+                  ]}
+                  onChangeText={handleChange("lastName")}
+                  onBlur={handleBlur("lastName")}
+                  value={values.lastName}
+                />
+              </View>
+              {errors.lastName && touched.lastName && (
+                <Text style={styles.err}>{errors.lastName}</Text>
+              )}
 
-            <View style={{ position: "relative" }}>
-              <TextInput
-                placeholder="Password"
-                style={styles.input}
-                secureTextEntry={!showPw}
-                onChangeText={handleChange("password")}
-                onBlur={handleBlur("password")}
-                value={values.password}
-                autoCapitalize="none"
-              />
-              <TouchableOpacity
-                style={styles.eye}
-                onPress={() => setShowPw((s) => !s)}
-              >
-                <Text>{showPw ? "Hide" : "Show"}</Text>
-              </TouchableOpacity>
-            </View>
-            {errors.password && touched.password && (
-              <Text style={styles.err}>{errors.password}</Text>
-            )}
+              {/* Email Input */}
+              <View style={styles.inputWrapper}>
+                <View style={styles.iconContainer}>
+                  <Text style={styles.icon}>✉️</Text>
+                </View>
+                <TextInput
+                  placeholder="Email or Phone number"
+                  placeholderTextColor="#A0A0A0"
+                  style={[
+                    styles.input,
+                    errors.email && touched.email && styles.inputError,
+                  ]}
+                  onChangeText={handleChange("email")}
+                  onBlur={handleBlur("email")}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  value={values.email}
+                />
+              </View>
+              {errors.email && touched.email && (
+                <Text style={styles.err}>{errors.email}</Text>
+              )}
 
-            <TouchableOpacity style={styles.btn} onPress={() => handleSubmit()}>
-              <Text style={styles.btnText}>Register</Text>
-            </TouchableOpacity>
+              {/* Password Input */}
+              <View style={styles.inputWrapper}>
+                <View style={styles.iconContainer}>
+                  <Text style={styles.icon}>🔒</Text>
+                </View>
+                <TextInput
+                  placeholder="Password"
+                  placeholderTextColor="#A0A0A0"
+                  style={[
+                    styles.input,
+                    errors.password && touched.password && styles.inputError,
+                  ]}
+                  secureTextEntry={!showPw}
+                  onChangeText={handleChange("password")}
+                  onBlur={handleBlur("password")}
+                  value={values.password}
+                  autoCapitalize="none"
+                />
+                <TouchableOpacity
+                  style={styles.eye}
+                  onPress={() => setShowPw((s) => !s)}
+                >
+                  <Text style={styles.eyeText}>{showPw ? "👁️" : "👁️‍🗨️"}</Text>
+                </TouchableOpacity>
+              </View>
+              {errors.password && touched.password && (
+                <Text style={styles.err}>{errors.password}</Text>
+              )}
 
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Login")}
-              style={{ marginTop: 12 }}
-            >
-              <Text style={{ color: "#007bff" }}>
-                Already have an account? Sign in
+              {/* Password Requirements */}
+              <Text style={styles.passwordHint}>
+                Password must be at least 6 chars
               </Text>
-            </TouchableOpacity>
-          </>
-        )}
-      </Formik>
-    </View>
+
+              {/* Register Button */}
+              <TouchableOpacity
+                style={styles.btn}
+                onPress={() => handleSubmit()}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.btnText}>Create Account</Text>
+              </TouchableOpacity>
+
+              {/* Divider */}
+              <View style={styles.dividerContainer}>
+                <View style={styles.divider} />
+                <Text style={styles.dividerText}>or use google account</Text>
+                <View style={styles.divider} />
+              </View>
+
+              {/* Sign In Link */}
+              <View style={styles.footer}>
+                <Text style={styles.footerText}>
+                  Already you have an account?{" "}
+                </Text>
+                <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+                  <Text style={styles.linkText}>Log in</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+        </Formik>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 20, flex: 1, justifyContent: "center" },
-  title: { fontSize: 24, fontWeight: "700", marginBottom: 20 },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 12,
-    borderRadius: 8,
-    marginTop: 10,
+  container: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
   },
-  err: { color: "red" },
-  btn: {
-    backgroundColor: "#0b76ef",
-    padding: 14,
-    borderRadius: 8,
-    marginTop: 16,
+  scrollContent: {
+    flexGrow: 1,
+    paddingHorizontal: 24,
+    paddingTop: 60,
+    paddingBottom: 40,
+    justifyContent: "center",
+  },
+  header: {
+    marginBottom: 32,
     alignItems: "center",
   },
-  btnText: { color: "#fff", fontWeight: "600" },
-  eye: { position: "absolute", right: 12, top: 18 },
+  title: {
+    fontSize: 28,
+    fontWeight: "700",
+    color: "#1A1A1A",
+    marginBottom: 8,
+    textAlign: "center",
+  },
+  subtitle: {
+    fontSize: 14,
+    color: "#666666",
+    lineHeight: 20,
+    textAlign: "center",
+  },
+  formContainer: {
+    flex: 1,
+  },
+  inputWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F5F5F5",
+    borderRadius: 12,
+    marginBottom: 4,
+    borderWidth: 1,
+    borderColor: "#F5F5F5",
+    overflow: "hidden",
+  },
+  iconContainer: {
+    width: 48,
+    height: 56,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#EBEBEB",
+  },
+  icon: {
+    fontSize: 20,
+  },
+  input: {
+    flex: 1,
+    height: 56,
+    paddingHorizontal: 16,
+    fontSize: 15,
+    color: "#1A1A1A",
+  },
+  inputError: {
+    borderColor: "#35168aff",
+  },
+  eye: {
+    paddingHorizontal: 16,
+    height: 56,
+    justifyContent: "center",
+  },
+  eyeText: {
+    fontSize: 18,
+  },
+  err: {
+    color: "#35168aff",
+    fontSize: 12,
+    marginBottom: 12,
+    marginLeft: 4,
+  },
+  passwordHint: {
+    fontSize: 12,
+    color: "#999999",
+    marginBottom: 24,
+    marginLeft: 4,
+  },
+  btn: {
+    backgroundColor: "#35168aff",
+    height: 56,
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#35168aff",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  btnText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  dividerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 24,
+  },
+  divider: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "#E0E0E0",
+  },
+  dividerText: {
+    marginHorizontal: 12,
+    fontSize: 13,
+    color: "#999999",
+  },
+  googleBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#FFFFFF",
+    height: 56,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#E0E0E0",
+  },
+  googleIcon: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#4285F4",
+    marginRight: 12,
+  },
+  googleText: {
+    fontSize: 15,
+    color: "#1A1A1A",
+    fontWeight: "500",
+  },
+  footer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 24,
+  },
+  footerText: {
+    fontSize: 14,
+    color: "#666666",
+  },
+  linkText: {
+    fontSize: 14,
+    color: "#007AFF",
+    fontWeight: "600",
+  },
 });
