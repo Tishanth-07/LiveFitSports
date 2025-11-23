@@ -10,6 +10,8 @@ using Microsoft.IdentityModel.Tokens;
 using LiveFitSports.API.Utilities;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 var builder = WebApplication.CreateBuilder(args);
 // Listen on all network interfaces for dev access from devices
@@ -110,6 +112,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "images")),
+    RequestPath = "/images"
+});
 
 // Seed matches
 using (var scope = app.Services.CreateScope())

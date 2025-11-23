@@ -1,6 +1,7 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { AuthProvider, useAuth } from "./src/context/AuthContext";
+import { SportsProvider } from "./src/context/SportsContext";
 import AuthStack from "./src/navigation/AuthStack";
 import AppStack from "./src/navigation/AppStack";
 import { ActivityIndicator, View } from "react-native";
@@ -26,7 +27,9 @@ function RootNavigation() {
 export default function App() {
   return (
     <AuthProvider>
-      <RootNavigation />
+      <SportsProvider>
+        <RootNavigation />
+      </SportsProvider>
     </AuthProvider>
   );
 }

@@ -27,7 +27,7 @@ namespace LiveFitSports.API.Services
                     Description = "Champions League Quarter Finals",
                     Status = "Live",
                     StartAtUtc = DateTime.UtcNow.AddMinutes(-30),
-                    ImageUrl = "https://example.com/match1.png",
+                    ImageUrl = "/images/match11.png",
                     Teams = new List<string> { "Team A", "Team B" },
                     Popularity = 90,
                     Metadata = new Dictionary<string, object>
@@ -44,7 +44,7 @@ namespace LiveFitSports.API.Services
                     Description = "T20 World Cup Group Match",
                     Status = "Upcoming",
                     StartAtUtc = DateTime.UtcNow.AddHours(3),
-                    ImageUrl = "https://example.com/match2.png",
+                    ImageUrl = "/images/match12.png",
                     Teams = new List<string> { "India", "Australia" },
                     Popularity = 85,
                     Metadata = new Dictionary<string, object>
@@ -60,7 +60,7 @@ namespace LiveFitSports.API.Services
                     Description = "NBA Season Regular Match",
                     Status = "Finished",
                     StartAtUtc = DateTime.UtcNow.AddDays(-1),
-                    ImageUrl = "https://example.com/match3.png",
+                    ImageUrl = "/images/match13.png",
                     Teams = new List<string> { "Lakers", "Warriors" },
                     Popularity = 70,
                     Metadata = new Dictionary<string, object>

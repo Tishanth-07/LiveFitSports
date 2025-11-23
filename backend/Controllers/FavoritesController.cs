@@ -5,6 +5,9 @@ using LiveFitSports.API.Repositories;
 using LiveFitSports.API.Models;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
+using LiveFitSports.API.DTOs;
+using MongoDB.Bson;
+using System;
 
 namespace LiveFitSports.API.Controllers
 {
@@ -30,14 +33,28 @@ namespace LiveFitSports.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] Favorite fav)
+        public async Task<IActionResult> Add([FromBody] AddFavoriteRequest req)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
             if (string.IsNullOrEmpty(userId))
             {
                 return Unauthorized("User ID not found in token.");
             }
-            fav.UserId = userId;
+
+            if (req == null || string.IsNullOrWhiteSpace(req.ItemId))
+            {
+                return BadRequest(new { error = "ItemId is required." });
+            }
+
+            var fav = new Favorite
+            {
+                Id = ObjectId.GenerateNewId().ToString(),
+                UserId = userId,
+                ItemId = req.ItemId,
+                ItemType = string.IsNullOrWhiteSpace(req.ItemType) ? "match" : req.ItemType,
+                CreatedAtUtc = DateTime.UtcNow
+            };
+
             await _favRepo.AddAsync(fav);
             return Ok(fav);
         }

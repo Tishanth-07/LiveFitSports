@@ -16,7 +16,7 @@ namespace LiveFitSports.API.Data
                     Description = "A 30-minute cardio run to kickstart your day and boost metabolism.",
                     DurationMinutes = 30,
                     Difficulty = "Medium",
-                    ImageUrl = "https://example.com/images/morning_run.jpg"
+                    ImageUrl = "/images/match1.png"
                 },
                 new Workout
                 {
@@ -24,7 +24,7 @@ namespace LiveFitSports.API.Data
                     Description = "Strength training exercise for chest, shoulders, and triceps.",
                     DurationMinutes = 15,
                     Difficulty = "Easy",
-                    ImageUrl = "https://example.com/images/push_ups.jpg"
+                    ImageUrl = "/images/match2.png"
                 },
                 new Workout
                 {
@@ -32,7 +32,7 @@ namespace LiveFitSports.API.Data
                     Description = "Relaxing yoga sequence to improve flexibility and reduce stress.",
                     DurationMinutes = 25,
                     Difficulty = "Easy",
-                    ImageUrl = "https://example.com/images/yoga_flow.jpg"
+                    ImageUrl = "/images/match3.png"
                 },
                 new Workout
                 {
@@ -40,7 +40,7 @@ namespace LiveFitSports.API.Data
                     Description = "High-intensity interval training to burn calories quickly.",
                     DurationMinutes = 20,
                     Difficulty = "Hard",
-                    ImageUrl = "https://example.com/images/hiit_circuit.jpg"
+                    ImageUrl = "/images/match4.png"
                 },
                 new Workout
                 {
@@ -48,7 +48,7 @@ namespace LiveFitSports.API.Data
                     Description = "Outdoor or stationary cycling to improve cardiovascular health.",
                     DurationMinutes = 40,
                     Difficulty = "Medium",
-                    ImageUrl = "https://example.com/images/cycling.jpg"
+                    ImageUrl = "/images/match6.png"
                 }
             };
 
@@ -62,31 +62,31 @@ namespace LiveFitSports.API.Data
                 {
                     Title = "Stay Hydrated",
                     Content = "Drink at least 8 glasses of water daily to keep your body hydrated and maintain energy levels.",
-                    ImageUrl = "https://example.com/images/hydration.jpg"
+                    ImageUrl = "/images/match7.png"
                 },
                 new HealthTip
                 {
                     Title = "Stretch Before Workouts",
                     Content = "Always perform dynamic stretches before starting exercises to prevent injuries.",
-                    ImageUrl = "https://example.com/images/stretching.jpg"
+                    ImageUrl = "/images/match8.png"
                 },
                 new HealthTip
                 {
                     Title = "Balanced Diet",
                     Content = "Include proteins, healthy fats, and carbohydrates in your meals to maintain energy and muscle health.",
-                    ImageUrl = "https://example.com/images/balanced_diet.jpg"
+                    ImageUrl = "/images/match9.png"
                 },
                 new HealthTip
                 {
                     Title = "Get Enough Sleep",
                     Content = "Aim for 7-9 hours of sleep each night to allow your body to recover and maintain mental focus.",
-                    ImageUrl = "https://example.com/images/sleep.jpg"
+                    ImageUrl = "/images/match10.png"
                 },
                 new HealthTip
                 {
                     Title = "Regular Physical Activity",
                     Content = "Engage in at least 150 minutes of moderate-intensity exercise per week for overall health.",
-                    ImageUrl = "https://example.com/images/physical_activity.jpg"
+                    ImageUrl = "/images/match5.png"
                 }
             };
 
