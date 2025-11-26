@@ -223,16 +223,16 @@ const styles = StyleSheet.create({
     color: "#1A1A1A",
   },
   inputFocused: {
-    borderColor: "#FF6B35",
+    borderColor: "#35168aff",
     backgroundColor: "#FFF5F2",
-    shadowColor: "#FF6B35",
+    shadowColor: "#35168aff",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 3,
   },
   inputFilled: {
-    borderColor: "#FF6B35",
+    borderColor: "#35168aff",
     backgroundColor: "#FFF5F2",
   },
   focusIndicator: {
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: "#FF6B35",
+    backgroundColor: "#35168aff",
   },
   timerContainer: {
     marginBottom: 16,
@@ -291,11 +291,11 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   resendButton: {
-    backgroundColor: "#FF6B35",
+    backgroundColor: "#35168aff",
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 10,
-    shadowColor: "#FF6B35",
+    shadowColor: "#35168aff",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,

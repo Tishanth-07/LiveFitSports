@@ -13,7 +13,7 @@ export default function FavoritesScreen({ navigation }: any) {
       <View style={styles.container}>
         {/* Header with Gradient */}
         <LinearGradient
-          colors={["#FF6B35", "#FF8C61"]}
+          colors={["#35168aff", "#664daaff"]}
           style={styles.headerGradient}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
@@ -35,7 +35,7 @@ export default function FavoritesScreen({ navigation }: any) {
             Start adding matches to your favorites to see them here
           </Text>
           <View style={styles.emptyHintBox}>
-            <MaterialIcons name="info-outline" size={20} color="#FF6B35" />
+            <MaterialIcons name="info-outline" size={20} color="#35168aff" />
             <Text style={styles.emptyHint}>
               Tap the heart icon on any match to add it to favorites
             </Text>
@@ -49,7 +49,7 @@ export default function FavoritesScreen({ navigation }: any) {
     <View style={styles.container}>
       {/* Header with Gradient */}
       <LinearGradient
-        colors={["#FF6B35", "#FF8C61"]}
+        colors={["#35168aff", "#6542c3ff"]}
         style={styles.headerGradient}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderBottomLeftRadius: 25,
     borderBottomRightRadius: 25,
-    shadowColor: "#FF6B35",
+    shadowColor: "#35168aff",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   countText: {
-    color: "#FF6B35",
+    color: "#35168aff",
     fontSize: 16,
     fontWeight: "800",
   },
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 24,
-    shadowColor: "#FF6B35",
+    shadowColor: "#35168aff",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 12,
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
   },
   emptyHint: {
     fontSize: 14,
-    color: "#FF6B35",
+    color: "#35168aff",
     marginLeft: 12,
     flex: 1,
     fontWeight: "600",

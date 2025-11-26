@@ -150,7 +150,7 @@ export default function ProfileScreen({ navigation }: any) {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#FF6B35" />
+        <ActivityIndicator size="large" color="#35168aff" />
         <Text style={styles.loadingText}>Loading your profile...</Text>
       </View>
     );
@@ -160,7 +160,7 @@ export default function ProfileScreen({ navigation }: any) {
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Header with Gradient */}
       <LinearGradient
-        colors={["#FF6B35", "#FF8C61"]}
+        colors={["#0e0428ff", "#815ee1ff"]}
         style={styles.headerGradient}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
@@ -192,7 +192,7 @@ export default function ProfileScreen({ navigation }: any) {
             </TouchableOpacity>
             {uploading && (
               <View style={styles.uploadingOverlay}>
-                <ActivityIndicator size="small" color="#FF6B35" />
+                <ActivityIndicator size="small" color="#35168aff" />
               </View>
             )}
           </View>
@@ -278,7 +278,7 @@ export default function ProfileScreen({ navigation }: any) {
       {/* Favorites Section */}
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
-          <MaterialIcons name="favorite" size={24} color="#FF6B35" />
+          <MaterialIcons name="favorite" size={24} color="#e30e27ff" />
           <Text style={styles.sectionTitle}>Your Favorites</Text>
           <View style={styles.favoritesCount}>
             <Text style={styles.favoritesCountText}>
@@ -321,7 +321,7 @@ export default function ProfileScreen({ navigation }: any) {
         onPress={signOut}
         activeOpacity={0.8}
       >
-        <MaterialIcons name="logout" size={20} color="#FF3B30" />
+        <MaterialIcons name="logout" size={20} color="#35168aff" />
         <Text style={styles.signOutText}>Sign Out</Text>
       </TouchableOpacity>
 
@@ -377,7 +377,7 @@ const styles = StyleSheet.create({
     borderColor: "#FFFFFF",
   },
   avatarText: {
-    color: "#FF6B35",
+    color: "#35168aff",
     fontSize: 48,
     fontWeight: "800",
   },
@@ -385,7 +385,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 0,
     bottom: 0,
-    backgroundColor: "#FF6B35",
+    backgroundColor: "#35168aff",
     width: 40,
     height: 40,
     borderRadius: 20,
@@ -468,14 +468,14 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   editButton: {
-    backgroundColor: "#FF6B35",
+    backgroundColor: "#35168aff",
     paddingVertical: 14,
     paddingHorizontal: 24,
     borderRadius: 12,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#FF6B35",
+    shadowColor: "#35168aff",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -500,7 +500,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   section: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#ffffffff",
     marginHorizontal: 20,
     marginTop: 20,
     borderRadius: 20,
@@ -532,7 +532,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   favoritesCountText: {
-    color: "#FF6B35",
+    color: "#35168aff",
     fontSize: 14,
     fontWeight: "700",
   },
@@ -571,15 +571,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: "#FF3B30",
-    shadowColor: "#FF3B30",
+    borderColor: "#35168aff",
+    shadowColor: "#35168aff",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
   },
   signOutText: {
-    color: "#FF3B30",
+    color: "#35168aff",
     fontSize: 16,
     fontWeight: "700",
     marginLeft: 8,

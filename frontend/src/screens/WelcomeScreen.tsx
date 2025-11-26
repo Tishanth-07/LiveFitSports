@@ -8,7 +8,7 @@ const WelcomeScreen = () => {
 
   return (
     <LinearGradient
-      colors={["#1a0a3e", "#35168a", "#4a1fb8"]}
+      colors={["#280c69ff", "#512db4ff", "#4308daff"]}
       style={styles.container}
     >
       {/* Animated Background Circles */}
@@ -38,7 +38,7 @@ const WelcomeScreen = () => {
             activeOpacity={0.8}
           >
             <LinearGradient
-              colors={["#ff6b6b", "#ee5a6f"]}
+              colors={["#1a034eff", "#5f15bfff"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={styles.gradientButton}
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     borderRadius: 16,
     overflow: "hidden",
-    shadowColor: "#ff6b6b",
+    shadowColor: "#542bc4ff",
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.4,
     shadowRadius: 12,

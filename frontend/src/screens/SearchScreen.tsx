@@ -214,7 +214,11 @@ export default function SearchScreen({ navigation }: any) {
                     </Text>
                   ) : null}
                 </View>
-                <MaterialIcons name="chevron-right" size={24} color="#FF6B35" />
+                <MaterialIcons
+                  name="chevron-right"
+                  size={24}
+                  color="#35168aff"
+                />
               </TouchableOpacity>
             );
           }
@@ -252,7 +256,7 @@ export default function SearchScreen({ navigation }: any) {
                   </Text>
                 ) : null}
               </View>
-              <MaterialIcons name="chevron-right" size={24} color="#FF6B35" />
+              <MaterialIcons name="chevron-right" size={24} color="#35168aff" />
             </TouchableOpacity>
           );
         }}
@@ -330,7 +334,7 @@ const styles = StyleSheet.create({
   loadingIndicator: {
     height: "100%",
     width: "30%",
-    backgroundColor: "#FF6B35",
+    backgroundColor: "#35168aff",
     borderRadius: 2,
   },
   listContent: {
@@ -350,7 +354,7 @@ const styles = StyleSheet.create({
     color: "#1A1A1A",
   },
   sectionCount: {
-    backgroundColor: "#FF6B35",
+    backgroundColor: "#35168aff",
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 12,

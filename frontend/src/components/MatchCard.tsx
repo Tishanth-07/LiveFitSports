@@ -76,7 +76,7 @@ export default function MatchCard({
             <View style={styles.sportBadge}>
               <Text style={styles.sportText}>{match.Sport || "Sport"}</Text>
             </View>
-            <Feather name="chevron-right" size={22} color="#FF6B35" />
+            <Feather name="chevron-right" size={22} color="#35168aff" />
           </View>
 
           <Text style={styles.title} numberOfLines={2}>
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
   teamsText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#FF6B35",
+    color: "#35168aff",
     textAlign: "center",
   },
   footer: {

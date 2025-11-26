@@ -82,7 +82,7 @@ export default function MatchDetailsScreen({ route }: any) {
         <View style={styles.titleSection}>
           <Text style={styles.title}>{match.Title}</Text>
           <View style={styles.sportBadge}>
-            <MaterialIcons name="sports" size={16} color="#FF6B35" />
+            <MaterialIcons name="sports" size={16} color="#35168aff" />
             <Text style={styles.sportText}>{match.Sport}</Text>
           </View>
         </View>
@@ -109,7 +109,7 @@ export default function MatchDetailsScreen({ route }: any) {
         <View style={styles.infoGrid}>
           {/* Date & Time Card */}
           <View style={styles.infoCard}>
-            <MaterialIcons name="calendar-today" size={24} color="#FF6B35" />
+            <MaterialIcons name="calendar-today" size={24} color="#35168aff" />
             <Text style={styles.infoLabel}>Date & Time</Text>
             <Text style={styles.infoValue}>
               {new Date(match.StartAtUtc).toLocaleDateString("en-US", {
@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
   sportText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#FF6B35",
+    color: "#35168aff",
     marginLeft: 6,
   },
   teamsSection: {
@@ -304,11 +304,11 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: "#FF6B35",
+    backgroundColor: "#35168aff",
     justifyContent: "center",
     alignItems: "center",
     marginHorizontal: 12,
-    shadowColor: "#FF6B35",
+    shadowColor: "#35168aff",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,

@@ -175,7 +175,7 @@ const WorkoutDetailsScreen = ({ route, navigation }: any) => {
           {/* Start Button */}
           <TouchableOpacity style={styles.startButton} activeOpacity={0.8}>
             <LinearGradient
-              colors={["#ff6b6b", "#ee5a6f"]}
+              colors={["#391a90ff", "#582ecbff"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={styles.startGradient}
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 50,
     right: 20,
-    backgroundColor: "#ff6b6b",
+    backgroundColor: "#6741cdff",
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
@@ -334,7 +334,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: "#ff6b6b",
+    backgroundColor: "#5a2dd7ff",
     marginRight: 12,
   },
   benefitText: {
@@ -345,7 +345,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     borderRadius: 16,
     overflow: "hidden",
-    shadowColor: "#ff6b6b",
+    shadowColor: "#5022ceff",
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.3,
     shadowRadius: 12,

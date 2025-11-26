@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   categoryBadge: {
-    backgroundColor: "#ff6b6b",
+    backgroundColor: "#6842d0ff",
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 20,

@@ -84,7 +84,7 @@ export default function HomeScreen({ navigation }: any) {
     <View style={styles.container}>
       {/* Header with Gradient */}
       <LinearGradient
-        colors={["#FF6B35", "#FF8C61"]}
+        colors={["#35168aff", "#8574b4ff"]}
         style={styles.header}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
@@ -153,7 +153,7 @@ export default function HomeScreen({ navigation }: any) {
                   </View>
                 )}
                 <LinearGradient
-                  colors={["transparent", "rgba(0,0,0,0.7)"]}
+                  colors={["transparent", "rgba(0, 0, 0, 0.36)"]}
                   style={styles.imageGradient}
                 />
               </View>
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderBottomLeftRadius: 25,
     borderBottomRightRadius: 25,
-    shadowColor: "#FF6B35",
+    shadowColor: "#35168aff",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 28,
     fontWeight: "800",
-    color: "#FFFFFF",
+    color: "#ffffffff",
     letterSpacing: 0.5,
   },
   headerSubtitle: {
@@ -272,7 +272,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     paddingVertical: 16,
     paddingHorizontal: 12,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#ffffffff",
     marginHorizontal: 16,
     marginTop: -15,
     borderRadius: 15,
@@ -292,12 +292,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF5F2",
   },
   tabText: {
-    color: "#666666",
+    color: "#666666ff",
     fontWeight: "600",
     fontSize: 13,
   },
   tabTextActive: {
-    color: "#FF6B35",
+    color: "#35168aff",
     fontWeight: "700",
   },
   tabIndicator: {
@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
     left: "20%",
     right: "20%",
     height: 3,
-    backgroundColor: "#FF6B35",
+    backgroundColor: "#35168aff",
     borderRadius: 2,
   },
   contentContainer: {
@@ -325,7 +325,7 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
   },
   card: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#ffffffff",
     borderRadius: 20,
     marginBottom: 20,
     overflow: "hidden",
@@ -343,10 +343,10 @@ const styles = StyleSheet.create({
   cardImage: {
     width: "100%",
     height: "100%",
-    backgroundColor: "#F0F0F0",
+    backgroundColor: "#f0f0f0ff",
   },
   placeholderImage: {
-    backgroundColor: "#FFE5DB",
+    backgroundColor: "#dfdbffff",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -364,7 +364,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   categoryBadge: {
-    backgroundColor: "#FF6B35",
+    backgroundColor: "#35168aff",
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 20,
@@ -375,7 +375,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#4CAF50",
   },
   categoryText: {
-    color: "#FFFFFF",
+    color: "#ffffffff",
     fontSize: 11,
     fontWeight: "700",
     textTransform: "uppercase",
@@ -401,7 +401,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   readMore: {
-    color: "#FF6B35",
+    color: "#35168aff",
     fontSize: 14,
     fontWeight: "600",
   },
