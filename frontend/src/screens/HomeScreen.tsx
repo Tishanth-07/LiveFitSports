@@ -1,18 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, FlatList, Image, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  FlatList,
+  Image,
+  ScrollView,
+} from "react-native";
 import { useSports } from "../context/SportsContext";
 import { fetchWorkouts, fetchHealthTips } from "../services/api";
 import { Workout, HealthTip } from "../utils/types";
 import MatchCard from "../components/MatchCard";
 import { toAbsoluteUrl } from "../utils/urlUtils";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function HomeScreen({ navigation }: any) {
   const { matches } = useSports();
   const [tab, setTab] = useState<"matches" | "tips" | "workouts">("matches");
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [tips, setTips] = useState<HealthTip[]>([]);
-
-  // Using toAbsoluteUrl from urlUtils for consistent URL handling
 
   useEffect(() => {
     (async () => {
@@ -36,7 +43,9 @@ export default function HomeScreen({ navigation }: any) {
           CreatedAtUtc: raw?.CreatedAtUtc ?? raw?.createdAtUtc,
         });
 
-        const wList = Array.isArray(w) ? (w as any[]).map(normalizeWorkout) : [];
+        const wList = Array.isArray(w)
+          ? (w as any[]).map(normalizeWorkout)
+          : [];
         const tList = Array.isArray(t) ? (t as any[]).map(normalizeTip) : [];
 
         const uniqueWorkouts = Array.from(
@@ -52,131 +61,348 @@ export default function HomeScreen({ navigation }: any) {
     })();
   }, []);
 
-  const TabButton = ({ id, label }: { id: "matches" | "tips" | "workouts"; label: string }) => (
+  const TabButton = ({
+    id,
+    label,
+  }: {
+    id: "matches" | "tips" | "workouts";
+    label: string;
+  }) => (
     <TouchableOpacity
       style={[styles.tabBtn, tab === id && styles.tabBtnActive]}
       onPress={() => setTab(id)}
+      activeOpacity={0.7}
     >
-      <Text style={[styles.tabText, tab === id && styles.tabTextActive]}>{label}</Text>
+      <Text style={[styles.tabText, tab === id && styles.tabTextActive]}>
+        {label}
+      </Text>
+      {tab === id && <View style={styles.tabIndicator} />}
     </TouchableOpacity>
   );
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#fff" }}>
+    <View style={styles.container}>
+      {/* Header with Gradient */}
+      <LinearGradient
+        colors={["#FF6B35", "#FF8C61"]}
+        style={styles.header}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+      >
+        <Text style={styles.headerTitle}>LiveFit Sports</Text>
+        <Text style={styles.headerSubtitle}>Stay Active, Stay Updated</Text>
+      </LinearGradient>
+
+      {/* Tab Bar */}
       <View style={styles.topBar}>
-        <TabButton id="matches" label="Matches" />
-        <TabButton id="tips" label="Health Tips" />
-        <TabButton id="workouts" label="Workouts" />
+        <TabButton id="matches" label="🏆 Matches" />
+        <TabButton id="tips" label="💡 Tips" />
+        <TabButton id="workouts" label="💪 Workouts" />
       </View>
 
+      {/* Matches Tab */}
       {tab === "matches" && (
-        <View style={{ flex: 1, padding: 16 }}>
+        <View style={styles.contentContainer}>
           <FlatList
             data={matches}
-            keyExtractor={(item, index) => String((item as any)?.Id ?? (item as any)?.id ?? index)}
+            keyExtractor={(item, index) =>
+              String((item as any)?.Id ?? (item as any)?.id ?? index)
+            }
             renderItem={({ item }) => (
               <MatchCard
                 match={item}
-                onPress={() => navigation.navigate("MatchDetails", { match: item })}
+                onPress={() =>
+                  navigation.navigate("MatchDetails", { match: item })
+                }
               />
             )}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.listContent}
           />
         </View>
       )}
 
+      {/* Health Tips Tab */}
       {tab === "tips" && (
-        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16 }}>
+        <ScrollView
+          style={styles.scrollContainer}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
           {tips.map((item, idx) => (
             <TouchableOpacity
               key={String(item.Id ?? idx)}
               style={styles.card}
-              onPress={() => navigation.navigate("HealthTipDetails", { id: (item as any)?.Id ?? (item as any)?.id, tip: item })}
+              onPress={() =>
+                navigation.navigate("HealthTipDetails", {
+                  id: (item as any)?.Id ?? (item as any)?.id,
+                  tip: item,
+                })
+              }
+              activeOpacity={0.9}
             >
-              {item.ImageUrl ? (
-                <Image source={{ uri: toAbsoluteUrl(item.ImageUrl) }} style={styles.image} />
-              ) : (
-                <View style={[styles.image, { backgroundColor: "#eee" }]} />
-              )}
+              <View style={styles.cardImageContainer}>
+                {item.ImageUrl ? (
+                  <Image
+                    source={{ uri: toAbsoluteUrl(item.ImageUrl) }}
+                    style={styles.cardImage}
+                  />
+                ) : (
+                  <View style={[styles.cardImage, styles.placeholderImage]}>
+                    <Text style={styles.placeholderText}>💡</Text>
+                  </View>
+                )}
+                <LinearGradient
+                  colors={["transparent", "rgba(0,0,0,0.7)"]}
+                  style={styles.imageGradient}
+                />
+              </View>
               <View style={styles.cardBody}>
-                <Text style={styles.title}>{item.Title}</Text>
+                <View style={styles.categoryBadge}>
+                  <Text style={styles.categoryText}>Health Tip</Text>
+                </View>
+                <Text style={styles.cardTitle} numberOfLines={2}>
+                  {item.Title}
+                </Text>
                 {item.Content ? (
-                  <Text style={styles.desc} numberOfLines={2}>{item.Content}</Text>
+                  <Text style={styles.cardDesc} numberOfLines={3}>
+                    {item.Content}
+                  </Text>
                 ) : null}
+                <View style={styles.cardFooter}>
+                  <Text style={styles.readMore}>Read More →</Text>
+                </View>
               </View>
             </TouchableOpacity>
           ))}
         </ScrollView>
       )}
 
+      {/* Workouts Tab */}
       {tab === "workouts" && (
-        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16 }}>
+        <ScrollView
+          style={styles.scrollContainer}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
           {workouts.map((item, idx) => (
             <TouchableOpacity
               key={String(item.Id ?? idx)}
               style={styles.card}
-              onPress={() => navigation.navigate("WorkoutDetails", { id: (item as any)?.Id ?? (item as any)?.id, workout: item })}
+              onPress={() =>
+                navigation.navigate("WorkoutDetails", {
+                  id: (item as any)?.Id ?? (item as any)?.id,
+                  workout: item,
+                })
+              }
+              activeOpacity={0.9}
             >
-              {item.ImageUrl ? (
-                <Image source={{ uri: toAbsoluteUrl(item.ImageUrl) }} style={styles.image} />
-              ) : (
-                <View style={[styles.image, { backgroundColor: "#eee" }]} />
-              )}
+              <View style={styles.cardImageContainer}>
+                {item.ImageUrl ? (
+                  <Image
+                    source={{ uri: toAbsoluteUrl(item.ImageUrl) }}
+                    style={styles.cardImage}
+                  />
+                ) : (
+                  <View style={[styles.cardImage, styles.placeholderImage]}>
+                    <Text style={styles.placeholderText}>💪</Text>
+                  </View>
+                )}
+                <LinearGradient
+                  colors={["transparent", "rgba(0,0,0,0.7)"]}
+                  style={styles.imageGradient}
+                />
+              </View>
               <View style={styles.cardBody}>
-                <Text style={styles.title}>{item.Title}</Text>
+                <View style={[styles.categoryBadge, styles.workoutBadge]}>
+                  <Text style={styles.categoryText}>
+                    {item.Category || "Workout"}
+                  </Text>
+                </View>
+                <Text style={styles.cardTitle} numberOfLines={2}>
+                  {item.Title}
+                </Text>
                 {item.Description ? (
-                  <Text style={styles.desc} numberOfLines={2}>{item.Description}</Text>
+                  <Text style={styles.cardDesc} numberOfLines={3}>
+                    {item.Description}
+                  </Text>
                 ) : null}
+                <View style={styles.cardFooter}>
+                  <Text style={styles.readMore}>Start Workout →</Text>
+                </View>
               </View>
             </TouchableOpacity>
           ))}
         </ScrollView>
       )}
-
-      {/* Profile */}
-      {/* Matches */}
-      {/* Favorites */}
-      {/* Workout Tips */}
-      {/* Health Tips */}
-      {/* Logout */}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#F8F9FA",
+  },
+  header: {
+    paddingTop: 50,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+    borderBottomLeftRadius: 25,
+    borderBottomRightRadius: 25,
+    shadowColor: "#FF6B35",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  headerTitle: {
+    fontSize: 28,
+    fontWeight: "800",
+    color: "#FFFFFF",
+    letterSpacing: 0.5,
+  },
+  headerSubtitle: {
+    fontSize: 14,
+    color: "rgba(255,255,255,0.9)",
+    marginTop: 4,
+  },
   topBar: {
     flexDirection: "row",
     justifyContent: "space-around",
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
-    backgroundColor: "#fff",
+    paddingVertical: 16,
+    paddingHorizontal: 12,
+    backgroundColor: "#FFFFFF",
+    marginHorizontal: 16,
+    marginTop: -15,
+    borderRadius: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
   },
   tabBtn: {
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 20,
-    backgroundColor: "#f0f0f0",
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    position: "relative",
   },
   tabBtnActive: {
-    backgroundColor: "#6C6CFF",
+    backgroundColor: "#FFF5F2",
   },
   tabText: {
-    color: "#333",
+    color: "#666666",
     fontWeight: "600",
+    fontSize: 13,
   },
   tabTextActive: {
-    color: "#fff",
+    color: "#FF6B35",
+    fontWeight: "700",
+  },
+  tabIndicator: {
+    position: "absolute",
+    bottom: 0,
+    left: "20%",
+    right: "20%",
+    height: 3,
+    backgroundColor: "#FF6B35",
+    borderRadius: 2,
+  },
+  contentContainer: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+  },
+  listContent: {
+    paddingBottom: 20,
+  },
+  scrollContainer: {
+    flex: 1,
+  },
+  scrollContent: {
+    padding: 16,
+    paddingBottom: 30,
   },
   card: {
-    flexDirection: "row",
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    marginBottom: 12,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    marginBottom: 20,
     overflow: "hidden",
-    elevation: 1,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 5,
   },
-  image: { width: 80, height: 80 },
-  cardBody: { flex: 1, padding: 10 },
-  title: { fontSize: 16, fontWeight: "700" },
-  desc: { color: "#555", marginTop: 4 },
+  cardImageContainer: {
+    position: "relative",
+    width: "100%",
+    height: 220,
+  },
+  cardImage: {
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#F0F0F0",
+  },
+  placeholderImage: {
+    backgroundColor: "#FFE5DB",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  placeholderText: {
+    fontSize: 60,
+  },
+  imageGradient: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 100,
+  },
+  cardBody: {
+    padding: 16,
+  },
+  categoryBadge: {
+    backgroundColor: "#FF6B35",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    alignSelf: "flex-start",
+    marginBottom: 12,
+  },
+  workoutBadge: {
+    backgroundColor: "#4CAF50",
+  },
+  categoryText: {
+    color: "#FFFFFF",
+    fontSize: 11,
+    fontWeight: "700",
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  cardTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#1A1A1A",
+    marginBottom: 8,
+    lineHeight: 26,
+  },
+  cardDesc: {
+    fontSize: 14,
+    color: "#666666",
+    lineHeight: 20,
+    marginBottom: 12,
+  },
+  cardFooter: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    marginTop: 8,
+  },
+  readMore: {
+    color: "#FF6B35",
+    fontSize: 14,
+    fontWeight: "600",
+  },
 });

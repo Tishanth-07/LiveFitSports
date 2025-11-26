@@ -25,6 +25,7 @@ import { useAuth } from "../context/AuthContext";
 import { useSports } from "../context/SportsContext";
 import MatchCard from "../components/MatchCard";
 import { Match } from "../utils/types";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function ProfileScreen({ navigation }: any) {
   const [profile, setProfile] = useState<any>(null);
@@ -79,7 +80,7 @@ export default function ProfileScreen({ navigation }: any) {
   };
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSave = async () => {
@@ -149,104 +150,164 @@ export default function ProfileScreen({ navigation }: any) {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#6C6CFF" />
+        <ActivityIndicator size="large" color="#FF6B35" />
+        <Text style={styles.loadingText}>Loading your profile...</Text>
       </View>
     );
   }
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.avatarContainer}>
-          {profile?.AvatarUrl ? (
-            <Image
-              source={{ uri: toAbsolute(profile.AvatarUrl) }}
-              style={styles.avatar}
-            />
-          ) : (
-            <View style={styles.avatarPlaceholder}>
-              <Text style={styles.avatarText}>
-                {profile?.FirstName?.[0] || "U"}
-              </Text>
-            </View>
-          )}
-          <TouchableOpacity
-            style={styles.editPhotoButton}
-            onPress={pickImageAndUpload}
-            disabled={uploading}
-          >
-            <MaterialIcons 
-              name={uploading ? "hourglass-empty" : "camera-alt"} 
-              size={24} 
-              color="#fff" 
-            />
-          </TouchableOpacity>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      {/* Header with Gradient */}
+      <LinearGradient
+        colors={["#FF6B35", "#FF8C61"]}
+        style={styles.headerGradient}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+      >
+        <View style={styles.header}>
+          <View style={styles.avatarContainer}>
+            {profile?.AvatarUrl ? (
+              <Image
+                source={{ uri: toAbsolute(profile.AvatarUrl) }}
+                style={styles.avatar}
+              />
+            ) : (
+              <View style={styles.avatarPlaceholder}>
+                <Text style={styles.avatarText}>
+                  {profile?.FirstName?.[0] || "U"}
+                </Text>
+              </View>
+            )}
+            <TouchableOpacity
+              style={styles.editPhotoButton}
+              onPress={pickImageAndUpload}
+              disabled={uploading}
+            >
+              <MaterialIcons
+                name={uploading ? "hourglass-empty" : "camera-alt"}
+                size={20}
+                color="#fff"
+              />
+            </TouchableOpacity>
+            {uploading && (
+              <View style={styles.uploadingOverlay}>
+                <ActivityIndicator size="small" color="#FF6B35" />
+              </View>
+            )}
+          </View>
         </View>
+      </LinearGradient>
 
+      {/* Profile Info Card */}
+      <View style={styles.profileCard}>
         <View style={styles.nameContainer}>
           {editing ? (
             <View style={styles.editFields}>
               <TextInput
-                style={[styles.input, styles.nameInput]}
+                style={styles.input}
                 value={formData.firstName}
                 onChangeText={(text) => handleInputChange("firstName", text)}
                 placeholder="First Name"
+                placeholderTextColor="#999"
                 autoFocus
               />
               <TextInput
-                style={[styles.input, styles.nameInput]}
+                style={styles.input}
                 value={formData.lastName}
                 onChangeText={(text) => handleInputChange("lastName", text)}
                 placeholder="Last Name"
+                placeholderTextColor="#999"
               />
             </View>
           ) : (
-            <Text style={styles.name}>
-              {profile?.FirstName} {profile?.LastName}
-            </Text>
+            <View style={styles.nameDisplay}>
+              <Text style={styles.name}>
+                {profile?.FirstName} {profile?.LastName}
+              </Text>
+              <View style={styles.emailContainer}>
+                <MaterialIcons name="email" size={16} color="#666" />
+                <Text style={styles.email}>{profile?.Email}</Text>
+              </View>
+            </View>
           )}
-          <Text style={styles.email}>{profile?.Email}</Text>
         </View>
 
-        <TouchableOpacity
-          style={styles.editButton}
-          onPress={() => editing ? handleSave() : setEditing(true)}
-          disabled={saving}
-        >
-          <Text style={styles.editButtonText}>
-            {saving ? "Saving..." : editing ? "Save Changes" : "Edit Profile"}
-          </Text>
-        </TouchableOpacity>
-
-        {editing && (
+        <View style={styles.buttonGroup}>
           <TouchableOpacity
-            style={styles.cancelButton}
-            onPress={() => {
-              setEditing(false);
-              // Reset form to original values
-              setFormData({
-                firstName: profile?.FirstName || "",
-                lastName: profile?.LastName || "",
-              });
-            }}
+            style={[styles.editButton, editing && styles.saveButton]}
+            onPress={() => (editing ? handleSave() : setEditing(true))}
             disabled={saving}
+            activeOpacity={0.8}
           >
-            <Text style={styles.cancelButtonText}>Cancel</Text>
+            {saving ? (
+              <ActivityIndicator size="small" color="#FFFFFF" />
+            ) : (
+              <>
+                <MaterialIcons
+                  name={editing ? "check" : "edit"}
+                  size={18}
+                  color="#FFFFFF"
+                />
+                <Text style={styles.editButtonText}>
+                  {editing ? "Save Changes" : "Edit Profile"}
+                </Text>
+              </>
+            )}
           </TouchableOpacity>
-        )}
+
+          {editing && (
+            <TouchableOpacity
+              style={styles.cancelButton}
+              onPress={() => {
+                setEditing(false);
+                setFormData({
+                  firstName: profile?.FirstName || "",
+                  lastName: profile?.LastName || "",
+                });
+              }}
+              disabled={saving}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.cancelButtonText}>Cancel</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
 
+      {/* Favorites Section */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Your Favorites</Text>
+        <View style={styles.sectionHeader}>
+          <MaterialIcons name="favorite" size={24} color="#FF6B35" />
+          <Text style={styles.sectionTitle}>Your Favorites</Text>
+          <View style={styles.favoritesCount}>
+            <Text style={styles.favoritesCountText}>
+              {favorites?.length || 0}
+            </Text>
+          </View>
+        </View>
+
         {favorites?.length === 0 ? (
-          <Text style={styles.noFavorites}>No favorites yet</Text>
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyStateEmoji}>💔</Text>
+            <Text style={styles.emptyStateText}>No favorites yet</Text>
+            <Text style={styles.emptyStateSubtext}>
+              Start adding matches to your favorites
+            </Text>
+          </View>
         ) : (
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.favoritesScroll}
+          >
             {favorites.map((item: Match) => (
-              <View key={item.Id} style={{ marginRight: 12 }}>
+              <View key={item.Id} style={styles.favoriteCard}>
                 <MatchCard
                   match={item}
-                  onPress={() => navigation.navigate("MatchDetails", { match: item })}
+                  onPress={() =>
+                    navigation.navigate("MatchDetails", { match: item })
+                  }
                 />
               </View>
             ))}
@@ -254,9 +315,17 @@ export default function ProfileScreen({ navigation }: any) {
         )}
       </View>
 
-      <TouchableOpacity style={styles.signOutButton} onPress={signOut}>
+      {/* Sign Out Button */}
+      <TouchableOpacity
+        style={styles.signOutButton}
+        onPress={signOut}
+        activeOpacity={0.8}
+      >
+        <MaterialIcons name="logout" size={20} color="#FF3B30" />
         <Text style={styles.signOutText}>Sign Out</Text>
       </TouchableOpacity>
+
+      <View style={styles.bottomSpacer} />
     </ScrollView>
   );
 }
@@ -264,134 +333,258 @@ export default function ProfileScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8f9fa",
+    backgroundColor: "#F8F9FA",
   },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#F8F9FA",
+  },
+  loadingText: {
+    marginTop: 12,
+    fontSize: 16,
+    color: "#666",
+  },
+  headerGradient: {
+    paddingTop: 60,
+    paddingBottom: 80,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
   },
   header: {
-    backgroundColor: "#fff",
-    padding: 20,
     alignItems: "center",
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
   },
   avatarContainer: {
     position: "relative",
-    marginBottom: 15,
   },
   avatar: {
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: "#F0F0F0",
+    borderWidth: 4,
+    borderColor: "#FFFFFF",
   },
   avatarPlaceholder: {
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: "#6C6CFF",
+    backgroundColor: "#FFFFFF",
     justifyContent: "center",
     alignItems: "center",
+    borderWidth: 4,
+    borderColor: "#FFFFFF",
   },
   avatarText: {
-    color: "#fff",
+    color: "#FF6B35",
     fontSize: 48,
-    fontWeight: "bold",
+    fontWeight: "800",
   },
   editPhotoButton: {
     position: "absolute",
     right: 0,
     bottom: 0,
-    backgroundColor: "#6C6CFF",
+    backgroundColor: "#FF6B35",
     width: 40,
     height: 40,
     borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
-    borderWidth: 2,
-    borderColor: "#fff",
+    borderWidth: 3,
+    borderColor: "#FFFFFF",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  uploadingOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(255,255,255,0.8)",
+    borderRadius: 60,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  profileCard: {
+    backgroundColor: "#FFFFFF",
+    marginTop: -50,
+    marginHorizontal: 20,
+    borderRadius: 20,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 5,
   },
   nameContainer: {
     alignItems: "center",
     marginBottom: 20,
   },
+  nameDisplay: {
+    alignItems: "center",
+  },
   name: {
     fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 5,
+    fontWeight: "800",
+    color: "#1A1A1A",
+    marginBottom: 8,
     textAlign: "center",
+  },
+  emailContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F8F9FA",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
   },
   email: {
     color: "#666",
-    fontSize: 16,
+    fontSize: 14,
+    marginLeft: 6,
+    fontWeight: "500",
   },
   editFields: {
     width: "100%",
-    marginBottom: 10,
   },
   input: {
-    backgroundColor: "#fff",
+    backgroundColor: "#F8F9FA",
     borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 10,
+    borderColor: "#E0E0E0",
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
     fontSize: 16,
-  },
-  nameInput: {
+    color: "#1A1A1A",
     textAlign: "center",
+  },
+  buttonGroup: {
+    gap: 12,
   },
   editButton: {
-    backgroundColor: "#6C6CFF",
-    paddingVertical: 12,
-    paddingHorizontal: 30,
-    borderRadius: 25,
-    marginBottom: 10,
+    backgroundColor: "#FF6B35",
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#FF6B35",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  saveButton: {
+    backgroundColor: "#4CAF50",
   },
   editButtonText: {
-    color: "#fff",
+    color: "#FFFFFF",
     fontSize: 16,
-    fontWeight: "600",
-    textAlign: "center",
+    fontWeight: "700",
+    marginLeft: 8,
   },
   cancelButton: {
-    padding: 10,
+    paddingVertical: 12,
+    alignItems: "center",
   },
   cancelButtonText: {
     color: "#666",
-    fontSize: 14,
-    textAlign: "center",
+    fontSize: 15,
+    fontWeight: "600",
   },
   section: {
+    backgroundColor: "#FFFFFF",
+    marginHorizontal: 20,
+    marginTop: 20,
+    borderRadius: 20,
     padding: 20,
-    backgroundColor: "#fff",
-    marginTop: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 15,
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#1A1A1A",
+    marginLeft: 8,
+    flex: 1,
   },
-  noFavorites: {
-    color: "#666",
-    textAlign: "center",
-    marginTop: 10,
-  },
-  signOutButton: {
-    margin: 20,
-    padding: 15,
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "#ff4444",
+  favoritesCount: {
+    backgroundColor: "#FFE5DB",
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    justifyContent: "center",
     alignItems: "center",
   },
-  signOutText: {
-    color: "#ff4444",
+  favoritesCountText: {
+    color: "#FF6B35",
+    fontSize: 14,
+    fontWeight: "700",
+  },
+  emptyState: {
+    alignItems: "center",
+    paddingVertical: 40,
+  },
+  emptyStateEmoji: {
+    fontSize: 50,
+    marginBottom: 12,
+  },
+  emptyStateText: {
     fontSize: 16,
     fontWeight: "600",
+    color: "#666",
+    marginBottom: 4,
+  },
+  emptyStateSubtext: {
+    fontSize: 14,
+    color: "#999",
+  },
+  favoritesScroll: {
+    paddingRight: 20,
+  },
+  favoriteCard: {
+    marginRight: 12,
+    width: 280,
+  },
+  signOutButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginHorizontal: 20,
+    marginTop: 20,
+    padding: 16,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: "#FF3B30",
+    shadowColor: "#FF3B30",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  signOutText: {
+    color: "#FF3B30",
+    fontSize: 16,
+    fontWeight: "700",
+    marginLeft: 8,
+  },
+  bottomSpacer: {
+    height: 40,
   },
 });
