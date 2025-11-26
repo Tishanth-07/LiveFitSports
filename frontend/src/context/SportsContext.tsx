@@ -53,7 +53,9 @@ export const SportsProvider = ({ children }: any) => {
   const loadMatches = async () => {
     try {
       const list = await fetchMatches();
-      setMatches(Array.isArray(list) ? list.map(normalizeMatch) : []);
+      const normalized = Array.isArray(list) ? list.map(normalizeMatch) : [];
+      const unique = Array.from(new Map(normalized.map((m) => [m.Id, m])).values());
+      setMatches(unique);
     } catch (err) {
       console.log("Error loading matches:", err);
     }
@@ -78,19 +80,28 @@ export const SportsProvider = ({ children }: any) => {
             })
           )
         ).filter(Boolean) as Match[];
-        setFavorites(detailed);
-        await AsyncStorage.setItem("favorites", JSON.stringify(detailed)); // cache
+        const uniqueFavs = Array.from(new Map(detailed.map((m) => [m.Id, m])).values());
+        setFavorites(uniqueFavs);
+        await AsyncStorage.setItem("favorites", JSON.stringify(uniqueFavs)); // cache
         return;
       }
 
       // Fallback to local cache for guests
       const data = await AsyncStorage.getItem("favorites");
-      if (data) setFavorites(JSON.parse(data));
+      if (data) {
+        const parsed: Match[] = JSON.parse(data);
+        const unique = Array.from(new Map(parsed.map((m) => [m.Id, m])).values());
+        setFavorites(unique);
+      }
     } catch (err: any) {
       // If unauthorized, fallback to local cache
       if (err?.response?.status === 401) {
         const data = await AsyncStorage.getItem("favorites");
-        if (data) setFavorites(JSON.parse(data));
+        if (data) {
+          const parsed: Match[] = JSON.parse(data);
+          const unique = Array.from(new Map(parsed.map((m) => [m.Id, m])).values());
+          setFavorites(unique);
+        }
         return;
       }
       console.log("Error loading favorites:", err);

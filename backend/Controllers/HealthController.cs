@@ -19,21 +19,26 @@ namespace LiveFitSports.API.Controllers
         }
 
         [HttpGet("workouts")]
+        [AllowAnonymous]
         public async Task<ActionResult<List<Workout>>> GetWorkouts()
         {
             var workouts = await _service.GetAllWorkoutsAsync();
             return Ok(workouts);
         }
 
-        [HttpGet("workouts/{id}")]
+        [HttpGet("workouts/{id:length(24)}")]
+        [AllowAnonymous]
         public async Task<ActionResult<Workout>> GetWorkout(string id)
         {
+            if (string.IsNullOrWhiteSpace(id) || id.Length != 24)
+                return NotFound();
             var workout = await _service.GetWorkoutAsync(id);
             if (workout == null) return NotFound();
             return Ok(workout);
         }
 
         [HttpGet("tips")]
+        [AllowAnonymous]
         public async Task<ActionResult<List<HealthTip>>> GetHealthTips()
         {
             var tips = await _service.GetAllHealthTipsAsync();
@@ -41,6 +46,7 @@ namespace LiveFitSports.API.Controllers
         }
 
         [HttpGet("tips/{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult<HealthTip>> GetHealthTip(string id)
         {
             var tip = await _service.GetHealthTipAsync(id);

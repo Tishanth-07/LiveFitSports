@@ -104,8 +104,57 @@ export const getFavourites = async () => {
     const response = await api.get("/api/Favorites");
     return response.data; // expects array of favourite items
   } catch (error) {
-    console.error("Error fetching favourites:", error);
+    const e: any = error;
+    if (e?.response?.status !== 401) {
+      console.error("Error fetching favourites:", e);
+    }
     throw error;
+  }
+};
+
+export const fetchWorkouts = async () => {
+  try {
+    const res = await api.get("/api/Health/workouts");
+    return res.data;
+  } catch (err) {
+    console.error("Error fetching workouts:", err);
+    throw err;
+  }
+};
+
+export const fetchWorkoutById = async (id: string) => {
+  if (!id || id.length !== 24) {
+    throw new Error("Invalid workout id");
+  }
+  try {
+    const res = await api.get(`/api/Health/workouts/${id}`);
+    return res.data;
+  } catch (err) {
+    console.error("Error fetching workout:", err);
+    throw err;
+  }
+};
+
+export const fetchHealthTips = async () => {
+  try {
+    const res = await api.get("/api/Health/tips");
+    return res.data;
+  } catch (err) {
+    console.error("Error fetching health tips:", err);
+    throw err;
+  }
+};
+
+export const fetchHealthTipById = async (id: string) => {
+  if (!id || id.length !== 24) {
+    throw new Error("Invalid health tip id");
+  }
+  try {
+    const res = await api.get(`/api/Health/tips/${id}`);
+    return res.data;
+  } catch (err) {
+    console.error("Error fetching health tip:", err);
+    throw err;
   }
 };
 
