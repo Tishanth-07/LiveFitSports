@@ -1,6 +1,7 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Feather } from "@expo/vector-icons";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 // Screens
 import HomeScreen from "../screens/HomeScreen";
@@ -8,8 +9,56 @@ import MatchesScreen from "../screens/MatchesScreen";
 import FavoritesScreen from "../screens/FavoritesScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import SearchScreen from "../screens/SearchScreen";
+import MatchDetailsScreen from "../screens/MatchDetailsScreen";
+import WorkoutDetailsScreen from "../screens/WorkoutDetailsScreen";
+import HealthTipDetailsScreen from "../screens/HealthTipDetailsScreen";
+import HealthTipsScreen from "../screens/HealthTipsScreen";
+import WorkoutsScreen from "../screens/WorkoutsScreen";
 
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
+
+function HomeStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Matches" component={MatchesScreen} />
+      <Stack.Screen name="HealthTips" component={HealthTipsScreen} />
+      <Stack.Screen name="Workouts" component={WorkoutsScreen} />
+      <Stack.Screen name="MatchDetails" component={MatchDetailsScreen} />
+      <Stack.Screen name="WorkoutDetails" component={WorkoutDetailsScreen} />
+      <Stack.Screen name="HealthTipDetails" component={HealthTipDetailsScreen} />
+    </Stack.Navigator>
+  );
+}
+
+function SearchStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Search" component={SearchScreen} />
+      <Stack.Screen name="MatchDetails" component={MatchDetailsScreen} />
+      <Stack.Screen name="WorkoutDetails" component={WorkoutDetailsScreen} />
+      <Stack.Screen name="HealthTipDetails" component={HealthTipDetailsScreen} />
+    </Stack.Navigator>
+  );
+}
+
+function FavoritesStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Favorites" component={FavoritesScreen} />
+      <Stack.Screen name="MatchDetails" component={MatchDetailsScreen} />
+    </Stack.Navigator>
+  );
+}
+
+function ProfileStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Profile" component={ProfileScreen} />
+    </Stack.Navigator>
+  );
+}
 
 export default function BottomTabs() {
   return (
@@ -36,10 +85,10 @@ export default function BottomTabs() {
         },
       })}
     >
-      <Tab.Screen name="HomeTab" component={HomeScreen} />
-      <Tab.Screen name="SearchTab" component={SearchScreen} />
-      <Tab.Screen name="FavoritesTab" component={FavoritesScreen} />
-      <Tab.Screen name="ProfileTab" component={ProfileScreen} />
+      <Tab.Screen name="HomeTab" component={HomeStack} />
+      <Tab.Screen name="SearchTab" component={SearchStack} />
+      <Tab.Screen name="FavoritesTab" component={FavoritesStack} />
+      <Tab.Screen name="ProfileTab" component={ProfileStack} />
     </Tab.Navigator>
   );
 }
