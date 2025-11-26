@@ -158,4 +158,50 @@ export const fetchHealthTipById = async (id: string) => {
   }
 };
 
+// Get profile
+export const fetchProfile = async () => {
+  try {
+    const res = await api.get("/api/profile");
+    return res.data;
+  } catch (err) {
+    console.error("fetchProfile error:", err);
+    throw err;
+  }
+};
+
+// Update profile (first/last name)
+export const updateProfile = async (payload: { FirstName?: string; LastName?: string }) => {
+  try {
+    const res = await api.put("/api/profile", payload);
+    return res.data;
+  } catch (err) {
+    console.error("updateProfile error:", err);
+    throw err;
+  }
+};
+
+// Upload avatar (multipart/form-data)
+export const uploadAvatar = async (fileUri: string, fileName: string) => {
+  try {
+    const formData = new FormData();
+    // On Expo, fileUri is like 'file://...'
+    const file: any = {
+      uri: fileUri,
+      name: fileName,
+      type: "image/jpeg",
+    };
+    formData.append("file", file as any);
+
+    const res = await api.post("/api/profile/avatar", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return res.data;
+  } catch (err) {
+    console.error("uploadAvatar error:", err);
+    throw err;
+  }
+};
+
 export default api;

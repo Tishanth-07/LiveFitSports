@@ -7,6 +7,13 @@ export default function HomeScreen({ navigation }: any) {
 
   return (
     <View style={{ flex: 1, padding: 20, gap: 15, justifyContent: "center" }}>
+
+      {/* Profile */}
+      <Button 
+        title="Profile" 
+        onPress={() => navigation.navigate("Profile")} 
+        />
+
       {/* Matches */}
       <Button
         title="View Matches"

@@ -15,6 +15,8 @@ namespace LiveFitSports.API.Models
         public required string FirstName { get; set; }
         public required string LastName { get; set; }
 
+        // Public URL to avatar image (served from wwwroot/uploads)
+        public string? AvatarUrl { get; set; }
         public required string Email { get; set; }
         public required string PasswordHash { get; set; } // For email+password signup
 
