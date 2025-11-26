@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, Image, ScrollView, Button } from "react-native";
 import { useSports } from "../context/SportsContext";
+import { toAbsoluteUrl } from "../utils/urlUtils";
 
 export default function MatchDetailsScreen({ route }: any) {
   const { match } = route.params;
@@ -12,8 +13,10 @@ export default function MatchDetailsScreen({ route }: any) {
     <ScrollView style={{ flex: 1, padding: 16 }}>
       {match.ImageUrl && (
         <Image
-          source={{ uri: match.ImageUrl }}
+          source={{ uri: toAbsoluteUrl(match.ImageUrl) }}
           style={{ width: "100%", height: 220, borderRadius: 10 }}
+          resizeMode="cover"
+          onError={(e) => console.log('Error loading image:', e.nativeEvent.error)}
         />
       )}
 

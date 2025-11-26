@@ -1,8 +1,15 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { View, TextInput, Text, TouchableOpacity, Image, FlatList, ScrollView, StyleSheet } from "react-native";
+import { View, TextInput, Text, TouchableOpacity, Image, SectionList, StyleSheet } from "react-native";
 import { fetchMatches, fetchWorkouts, fetchHealthTips } from "../services/api";
 import { Match, Workout, HealthTip } from "../utils/types";
 import MatchCard from "../components/MatchCard";
+
+type SearchItem =
+  | { type: "match"; value: Match }
+  | { type: "workout"; value: Workout }
+  | { type: "tip"; value: HealthTip };
+
+type SearchSection = { title: string; key: string; data: SearchItem[] };
 
 export default function SearchScreen({ navigation }: any) {
   const [q, setQ] = useState("");
@@ -43,44 +50,6 @@ export default function SearchScreen({ navigation }: any) {
     return () => timer.current && clearTimeout(timer.current);
   }, [normalizedText]);
 
-  const renderWorkout = ({ item }: { item: Workout }) => (
-    <TouchableOpacity
-      style={styles.row}
-      onPress={() => navigation.navigate("WorkoutDetails", { id: (item as any)?.Id ?? (item as any)?.id, workout: item })}
-    >
-      {item.ImageUrl ? (
-        <Image source={{ uri: item.ImageUrl }} style={styles.thumb} />
-      ) : (
-        <View style={[styles.thumb, { backgroundColor: "#ddd" }]} />
-      )}
-      <View style={{ flex: 1, marginLeft: 10 }}>
-        <Text style={styles.title}>{item.Title || "Workout"}</Text>
-        {item.Description ? (
-          <Text numberOfLines={1} style={styles.sub}>{item.Description}</Text>
-        ) : null}
-      </View>
-    </TouchableOpacity>
-  );
-
-  const renderTip = ({ item }: { item: HealthTip }) => (
-    <TouchableOpacity
-      style={styles.row}
-      onPress={() => navigation.navigate("HealthTipDetails", { id: (item as any)?.Id ?? (item as any)?.id, tip: item })}
-    >
-      {item.ImageUrl ? (
-        <Image source={{ uri: item.ImageUrl }} style={styles.thumb} />
-      ) : (
-        <View style={[styles.thumb, { backgroundColor: "#ddd" }]} />
-      )}
-      <View style={{ flex: 1, marginLeft: 10 }}>
-        <Text style={styles.title}>{item.Title || "Health Tip"}</Text>
-        {item.Content ? (
-          <Text numberOfLines={1} style={styles.sub}>{item.Content}</Text>
-        ) : null}
-      </View>
-    </TouchableOpacity>
-  );
-
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.searchBar}>
@@ -96,43 +65,95 @@ export default function SearchScreen({ navigation }: any) {
           <Text style={{ color: "#fff", fontWeight: "600" }}>{loading ? "..." : "Search"}</Text>
         </TouchableOpacity>
       </View>
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16 }}>
-        {matches.length > 0 ? (
-          <View style={{ marginBottom: 16 }}>
-            <Text style={styles.section}>Matches</Text>
-            <FlatList
-              data={matches}
-              keyExtractor={(item, index) => String((item as any)?.Id ?? (item as any)?.id ?? index)}
-              renderItem={({ item }) => (
-                <MatchCard match={item} onPress={() => navigation.navigate("MatchDetails", { match: item })} />
+      <SectionList<SearchItem, SearchSection>
+        sections={[
+          ...(matches.length > 0
+            ? [{ title: "Matches", key: "matches", data: matches.map((m) => ({ type: "match", value: m } as SearchItem)) }]
+            : []),
+          ...(workouts.length > 0
+            ? [{ title: "Workouts", key: "workouts", data: workouts.map((w) => ({ type: "workout", value: w } as SearchItem)) }]
+            : []),
+          ...(tips.length > 0
+            ? [{ title: "Health Tips", key: "tips", data: tips.map((t) => ({ type: "tip", value: t } as SearchItem)) }]
+            : []),
+        ]}
+        keyExtractor={(item, index) => String(((item.value as any)?.Id ?? (item.value as any)?.id ?? index))}
+        renderSectionHeader={({ section }) => (
+          <Text style={[styles.section, { paddingHorizontal: 16 }]}>{section.title as string}</Text>
+        )}
+        renderItem={({ item }) => {
+          if (item.type === "match") {
+            const match: Match = item.value as Match;
+            return (
+              <View style={{ paddingHorizontal: 16 }}>
+                <MatchCard
+                  match={match}
+                  onPress={() => navigation.navigate("MatchDetails", { match })}
+                />
+              </View>
+            );
+          }
+          if (item.type === "workout") {
+            const workout: Workout = item.value as Workout;
+            return (
+              <TouchableOpacity
+                style={[styles.row, { marginHorizontal: 16 }]}
+                onPress={() =>
+                  navigation.navigate("WorkoutDetails", {
+                    id: (workout as any)?.Id ?? (workout as any)?.id,
+                    workout,
+                  })
+                }
+              >
+                {workout.ImageUrl ? (
+                  <Image source={{ uri: workout.ImageUrl }} style={styles.thumb} />
+                ) : (
+                  <View style={[styles.thumb, { backgroundColor: "#ddd" }]} />
+                )}
+                <View style={{ flex: 1, marginLeft: 10 }}>
+                  <Text style={styles.title}>{workout.Title || "Workout"}</Text>
+                  {workout.Description ? (
+                    <Text numberOfLines={1} style={styles.sub}>
+                      {workout.Description}
+                    </Text>
+                  ) : null}
+                </View>
+              </TouchableOpacity>
+            );
+          }
+          const tip: HealthTip = item.value as HealthTip;
+          return (
+            <TouchableOpacity
+              style={[styles.row, { marginHorizontal: 16 }]}
+              onPress={() =>
+                navigation.navigate("HealthTipDetails", {
+                  id: (tip as any)?.Id ?? (tip as any)?.id,
+                  tip,
+                })
+              }
+            >
+              {tip.ImageUrl ? (
+                <Image source={{ uri: tip.ImageUrl }} style={styles.thumb} />
+              ) : (
+                <View style={[styles.thumb, { backgroundColor: "#ddd" }]} />
               )}
-            />
-          </View>
-        ) : null}
-        {workouts.length > 0 ? (
-          <View style={{ marginBottom: 16 }}>
-            <Text style={styles.section}>Workouts</Text>
-            <FlatList
-              data={workouts}
-              keyExtractor={(item, index) => String((item as any)?.Id ?? (item as any)?.id ?? index)}
-              renderItem={renderWorkout}
-            />
-          </View>
-        ) : null}
-        {tips.length > 0 ? (
-          <View style={{ marginBottom: 16 }}>
-            <Text style={styles.section}>Health Tips</Text>
-            <FlatList
-              data={tips}
-              keyExtractor={(item, index) => String((item as any)?.Id ?? (item as any)?.id ?? index)}
-              renderItem={renderTip}
-            />
-          </View>
-        ) : null}
-        {!loading && normalizedText && matches.length === 0 && workouts.length === 0 && tips.length === 0 ? (
-          <Text>No results</Text>
-        ) : null}
-      </ScrollView>
+              <View style={{ flex: 1, marginLeft: 10 }}>
+                <Text style={styles.title}>{tip.Title || "Health Tip"}</Text>
+                {tip.Content ? (
+                  <Text numberOfLines={1} style={styles.sub}>
+                    {tip.Content}
+                  </Text>
+                ) : null}
+              </View>
+            </TouchableOpacity>
+          );
+        }}
+        ListEmptyComponent={() => (
+          !loading && normalizedText ? (
+            <Text style={{ padding: 16 }}>No results</Text>
+          ) : null
+        )}
+      />
     </View>
   );
 }

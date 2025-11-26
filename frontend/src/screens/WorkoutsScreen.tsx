@@ -8,23 +8,17 @@ import {
   StyleSheet,
 } from "react-native";
 import { Workout } from "../utils/types";
-import { fetchWorkouts, API_BASE_URL } from "../services/api";
+import { fetchWorkouts } from "../services/api";
+import { toAbsoluteUrl } from "../utils/urlUtils";
 
 const WorkoutsScreen = ({ navigation }: any) => {
   const [workouts, setWorkouts] = useState<Workout[]>([]);
-
-  const toAbsolute = (url?: string) => {
-    if (!url) return url;
-    if (/^https?:\/\//i.test(url)) return url;
-    const sep = url.startsWith("/") ? "" : "/";
-    return `${API_BASE_URL}${sep}${url}`;
-  };
 
   const normalize = (w: any): Workout => ({
     Id: w?.Id ?? w?.id,
     Title: w?.Title ?? w?.title,
     Description: w?.Description ?? w?.description,
-    ImageUrl: toAbsolute(w?.ImageUrl ?? w?.imageUrl),
+    ImageUrl: toAbsoluteUrl(w?.ImageUrl ?? w?.imageUrl),
     Category: w?.Category ?? w?.category,
     CreatedAtUtc: w?.CreatedAtUtc ?? w?.createdAtUtc,
   });

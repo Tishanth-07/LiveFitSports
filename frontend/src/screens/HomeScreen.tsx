@@ -4,6 +4,7 @@ import { useSports } from "../context/SportsContext";
 import { fetchWorkouts, fetchHealthTips } from "../services/api";
 import { Workout, HealthTip } from "../utils/types";
 import MatchCard from "../components/MatchCard";
+import { toAbsoluteUrl } from "../utils/urlUtils";
 
 export default function HomeScreen({ navigation }: any) {
   const { matches } = useSports();
@@ -11,12 +12,42 @@ export default function HomeScreen({ navigation }: any) {
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [tips, setTips] = useState<HealthTip[]>([]);
 
+  // Using toAbsoluteUrl from urlUtils for consistent URL handling
+
   useEffect(() => {
     (async () => {
       try {
         const [w, t] = await Promise.all([fetchWorkouts(), fetchHealthTips()]);
-        setWorkouts(Array.isArray(w) ? (w as any[]) as Workout[] : []);
-        setTips(Array.isArray(t) ? (t as any[]) as HealthTip[] : []);
+
+        const normalizeWorkout = (raw: any): Workout => ({
+          Id: raw?.Id ?? raw?.id,
+          Title: raw?.Title ?? raw?.title,
+          Description: raw?.Description ?? raw?.description,
+          ImageUrl: toAbsoluteUrl(raw?.ImageUrl ?? raw?.imageUrl),
+          Category: raw?.Category ?? raw?.category,
+          CreatedAtUtc: raw?.CreatedAtUtc ?? raw?.createdAtUtc,
+        });
+
+        const normalizeTip = (raw: any): HealthTip => ({
+          Id: raw?.Id ?? raw?.id,
+          Title: raw?.Title ?? raw?.title,
+          Content: raw?.Content ?? raw?.content,
+          ImageUrl: toAbsoluteUrl(raw?.ImageUrl ?? raw?.imageUrl),
+          CreatedAtUtc: raw?.CreatedAtUtc ?? raw?.createdAtUtc,
+        });
+
+        const wList = Array.isArray(w) ? (w as any[]).map(normalizeWorkout) : [];
+        const tList = Array.isArray(t) ? (t as any[]).map(normalizeTip) : [];
+
+        const uniqueWorkouts = Array.from(
+          new Map(wList.map((item) => [item.Id, item])).values()
+        ) as Workout[];
+        const uniqueTips = Array.from(
+          new Map(tList.map((item) => [item.Id, item])).values()
+        ) as HealthTip[];
+
+        setWorkouts(uniqueWorkouts);
+        setTips(uniqueTips);
       } catch {}
     })();
   }, []);
@@ -62,7 +93,7 @@ export default function HomeScreen({ navigation }: any) {
               onPress={() => navigation.navigate("HealthTipDetails", { id: (item as any)?.Id ?? (item as any)?.id, tip: item })}
             >
               {item.ImageUrl ? (
-                <Image source={{ uri: item.ImageUrl }} style={styles.image} />
+                <Image source={{ uri: toAbsoluteUrl(item.ImageUrl) }} style={styles.image} />
               ) : (
                 <View style={[styles.image, { backgroundColor: "#eee" }]} />
               )}
@@ -86,7 +117,7 @@ export default function HomeScreen({ navigation }: any) {
               onPress={() => navigation.navigate("WorkoutDetails", { id: (item as any)?.Id ?? (item as any)?.id, workout: item })}
             >
               {item.ImageUrl ? (
-                <Image source={{ uri: item.ImageUrl }} style={styles.image} />
+                <Image source={{ uri: toAbsoluteUrl(item.ImageUrl) }} style={styles.image} />
               ) : (
                 <View style={[styles.image, { backgroundColor: "#eee" }]} />
               )}

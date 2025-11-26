@@ -7,17 +7,13 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import { fetchHealthTips, API_BASE_URL } from "../services/api";
+import { fetchHealthTips } from "../services/api";
+import { toAbsoluteUrl } from "../utils/urlUtils";
 import { HealthTip } from "../utils/types";
 
 export default function HealthTipsScreen({ navigation }: any) {
   const [tips, setTips] = useState<HealthTip[]>([]);
-  const toAbsolute = (url?: string) => {
-    if (!url) return url;
-    if (/^https?:\/\//i.test(url)) return url;
-    const sep = url.startsWith("/") ? "" : "/";
-    return `${API_BASE_URL}${sep}${url}`;
-  };
+  // Using toAbsoluteUrl from urlUtils for consistent URL handling
 
   useEffect(() => {
     (async () => {
@@ -28,7 +24,7 @@ export default function HealthTipsScreen({ navigation }: any) {
               Id: t?.Id ?? t?.id,
               Title: t?.Title ?? t?.title,
               Content: t?.Content ?? t?.content,
-              ImageUrl: toAbsolute(t?.ImageUrl ?? t?.imageUrl),
+              ImageUrl: toAbsoluteUrl((data as any)?.ImageUrl ?? (data as any)?.imageUrl),
               CreatedAtUtc: t?.CreatedAtUtc ?? t?.createdAtUtc,
             }))
           : [];

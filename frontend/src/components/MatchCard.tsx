@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { Match } from "../utils/types";
+import { toAbsoluteUrl } from "../utils/urlUtils";
 
 export default function MatchCard({
   match,
@@ -24,8 +25,9 @@ export default function MatchCard({
     >
       {match.ImageUrl ? (
         <Image
-          source={{ uri: match.ImageUrl }}
+          source={{ uri: toAbsoluteUrl(match.ImageUrl) }}
           style={{ width: 80, height: 80, borderRadius: 8 }}
+          onError={(e) => console.log('Error loading image:', e.nativeEvent.error)}
         />
       ) : (
         <View

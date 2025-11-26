@@ -1,8 +1,26 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Platform, NativeModules } from "react-native";
 
 // Expo: use EXPO_PUBLIC_ prefix to expose env to the app bundle
-export const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
+const guessFromBundle = (): string | undefined => {
+  try {
+    const scriptURL: string | undefined = (NativeModules as any)?.SourceCode?.scriptURL;
+    if (scriptURL) {
+      const m = scriptURL.match(/^[a-zA-Z]+:\/\/([^:\/]+)(?::\d+)?/);
+      if (m) {
+        const host = m[1];
+        return `http://${host}:5126`;
+      }
+    }
+  } catch {}
+  return undefined;
+};
+
+export const API_BASE_URL =
+  process.env.EXPO_PUBLIC_API_BASE_URL ||
+  guessFromBundle() ||
+  (Platform.OS === "android" ? "http://10.0.2.2:5126" : "http://localhost:5126");
 
 const api = axios.create({
   baseURL: API_BASE_URL,

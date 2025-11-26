@@ -131,24 +131,37 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/images"
 });
 
-// Seed matches
-using (var scope = app.Services.CreateScope())
+try
 {
-    var services = scope.ServiceProvider;
-    var context = services.GetRequiredService<MongoContext>();
-    var seeder = new MatchSeeder(context);
-    await seeder.SeedAsync();
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        var context = services.GetRequiredService<MongoContext>();
+        var seeder = new MatchSeeder(context);
+        await seeder.SeedAsync();
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Match seeding failed: {ex}");
 }
 
-// Seed data
-using (var scope = app.Services.CreateScope())
+try
 {
-    var context = scope.ServiceProvider.GetRequiredService<MongoContext>();
-    await SeedData.SeedAsync(context);
+    using (var scope = app.Services.CreateScope())
+    {
+        var context = scope.ServiceProvider.GetRequiredService<MongoContext>();
+        await SeedData.SeedAsync(context);
+        await SeedData.FixImageUrlsAsync(context);
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"General seeding failed: {ex}");
 }
 
-app.UseCors("AllowAll");
 app.UseRouting();
+app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

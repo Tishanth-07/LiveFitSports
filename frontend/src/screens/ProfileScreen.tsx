@@ -241,18 +241,16 @@ export default function ProfileScreen({ navigation }: any) {
         {favorites?.length === 0 ? (
           <Text style={styles.noFavorites}>No favorites yet</Text>
         ) : (
-          <FlatList
-            data={favorites as Match[]}
-            keyExtractor={(item) => item.Id}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            renderItem={({ item }) => (
-              <MatchCard
-                match={item}
-                onPress={() => navigation.navigate("MatchDetails", { match: item })}
-              />
-            )}
-          />
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {favorites.map((item: Match) => (
+              <View key={item.Id} style={{ marginRight: 12 }}>
+                <MatchCard
+                  match={item}
+                  onPress={() => navigation.navigate("MatchDetails", { match: item })}
+                />
+              </View>
+            ))}
+          </ScrollView>
         )}
       </View>
 

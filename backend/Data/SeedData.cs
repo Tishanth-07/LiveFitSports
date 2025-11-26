@@ -16,7 +16,7 @@ namespace LiveFitSports.API.Data
                     Description = "A 30-minute cardio run to kickstart your day and boost metabolism.",
                     DurationMinutes = 30,
                     Difficulty = "Medium",
-                    ImageUrl = "/images/match1.png"
+                    ImageUrl = "/images/image1.png"
                 },
                 new Workout
                 {
@@ -24,7 +24,7 @@ namespace LiveFitSports.API.Data
                     Description = "Strength training exercise for chest, shoulders, and triceps.",
                     DurationMinutes = 15,
                     Difficulty = "Easy",
-                    ImageUrl = "/images/match2.png"
+                    ImageUrl = "/images/image2.png"
                 },
                 new Workout
                 {
@@ -32,7 +32,7 @@ namespace LiveFitSports.API.Data
                     Description = "Relaxing yoga sequence to improve flexibility and reduce stress.",
                     DurationMinutes = 25,
                     Difficulty = "Easy",
-                    ImageUrl = "/images/match3.png"
+                    ImageUrl = "/images/image3.png"
                 },
                 new Workout
                 {
@@ -40,7 +40,7 @@ namespace LiveFitSports.API.Data
                     Description = "High-intensity interval training to burn calories quickly.",
                     DurationMinutes = 20,
                     Difficulty = "Hard",
-                    ImageUrl = "/images/match4.png"
+                    ImageUrl = "/images/image4.png"
                 },
                 new Workout
                 {
@@ -48,7 +48,7 @@ namespace LiveFitSports.API.Data
                     Description = "Outdoor or stationary cycling to improve cardiovascular health.",
                     DurationMinutes = 40,
                     Difficulty = "Medium",
-                    ImageUrl = "/images/match6.png"
+                    ImageUrl = "/images/image6.png"
                 }
             };
 
@@ -62,36 +62,68 @@ namespace LiveFitSports.API.Data
                 {
                     Title = "Stay Hydrated",
                     Content = "Drink at least 8 glasses of water daily to keep your body hydrated and maintain energy levels.",
-                    ImageUrl = "/images/match7.png"
+                    ImageUrl = "/images/image7.png"
                 },
                 new HealthTip
                 {
                     Title = "Stretch Before Workouts",
                     Content = "Always perform dynamic stretches before starting exercises to prevent injuries.",
-                    ImageUrl = "/images/match8.png"
+                    ImageUrl = "/images/image8.png"
                 },
                 new HealthTip
                 {
                     Title = "Balanced Diet",
                     Content = "Include proteins, healthy fats, and carbohydrates in your meals to maintain energy and muscle health.",
-                    ImageUrl = "/images/match9.png"
+                    ImageUrl = "/images/image9.png"
                 },
                 new HealthTip
                 {
                     Title = "Get Enough Sleep",
                     Content = "Aim for 7-9 hours of sleep each night to allow your body to recover and maintain mental focus.",
-                    ImageUrl = "/images/match10.png"
+                    ImageUrl = "/images/image10.png"
                 },
                 new HealthTip
                 {
                     Title = "Regular Physical Activity",
                     Content = "Engage in at least 150 minutes of moderate-intensity exercise per week for overall health.",
-                    ImageUrl = "/images/match5.png"
+                    ImageUrl = "/images/image5.png"
                 }
             };
 
             if (!context.HealthTips.Find(_ => true).Any())
                 await context.HealthTips.InsertManyAsync(healthTips);
+
+        }
+
+        public static async Task FixImageUrlsAsync(MongoContext context)
+        {
+            var workoutFixList = await context.Workouts
+                .Find(w => w.ImageUrl != null && w.ImageUrl.Contains("/images/match"))
+                .ToListAsync();
+            foreach (var w in workoutFixList)
+            {
+                w.ImageUrl = w.ImageUrl!.Replace("/images/match", "/images/image");
+                await context.Workouts.ReplaceOneAsync(x => x.Id == w.Id, w);
+            }
+
+            var healthTipsFixList = await context.HealthTips
+                .Find(t => t.ImageUrl != null && t.ImageUrl.Contains("/images/match"))
+                .ToListAsync();
+            foreach (var t in healthTipsFixList)
+            {
+                t.ImageUrl = t.ImageUrl!.Replace("/images/match", "/images/image");
+                await context.HealthTips.ReplaceOneAsync(x => x.Id == t.Id, t);
+            }
+
+            var matchesCollection = context.Database.GetCollection<LiveFitSports.API.Models.Match>("matches");
+            var matchesFixList = await matchesCollection
+                .Find(m => m.ImageUrl != null && m.ImageUrl.Contains("/images/match"))
+                .ToListAsync();
+            foreach (var m in matchesFixList)
+            {
+                m.ImageUrl = m.ImageUrl!.Replace("/images/match", "/images/image");
+                await matchesCollection.ReplaceOneAsync(x => x.Id == m.Id, m);
+            }
         }
     }
 }
